@@ -18,8 +18,8 @@ export default function WelcomeStep({ onNext, onSkip }: WelcomeStepProps) {
         justifyContent: 'center',
         minHeight: '100%',
         textAlign: 'center',
-        px: 4,
-        py: 6,
+        px: { xs: 2, sm: 4 },
+        py: { xs: 4, sm: 6 },
       }}
     >
       {/* Logo */}
@@ -28,19 +28,19 @@ export default function WelcomeStep({ onNext, onSkip }: WelcomeStepProps) {
         src="/incoxchange-logomark.svg"
         alt="IncoXchange Logo"
         sx={{
-          width: 80,
-          height: 80,
-          mb: 4,
+          width: { xs: 64, sm: 80 },
+          height: { xs: 64, sm: 80 },
+          mb: { xs: 3, sm: 4 },
         }}
       />
 
       {/* Title */}
       <Typography
         sx={{
-          fontSize: '1.875rem',    // 30px
+          fontSize: { xs: '1.5rem', sm: '1.875rem' },
           fontWeight: 600,
           color: '#181D27',
-          mb: 3,
+          mb: { xs: 2, sm: 3 },
           lineHeight: 1.27,
         }}
       >
@@ -50,32 +50,29 @@ export default function WelcomeStep({ onNext, onSkip }: WelcomeStepProps) {
       {/* Description */}
       <Typography
         sx={{
-          fontSize: '1.125rem',    // 18px
+          fontSize: { xs: '1rem', sm: '1.125rem' },
           fontWeight: 400,
           color: '#535862',
-          mb: 4,
+          mb: { xs: 3, sm: 4 },
           maxWidth: 600,
           lineHeight: 1.56,
         }}
       >
-        Let&apos;s get your business set up to manage invoices,
-        customers, and payments.
+        Let&apos;s get your business set up to manage invoices, customers, and payments.
       </Typography>
 
       {/* Additional Info */}
       <Typography
         sx={{
-          fontSize: '1rem',        // 16px
+          fontSize: { xs: '0.875rem', sm: '1rem' },
           fontWeight: 400,
           color: '#535862',
-          mb: 6,
+          mb: { xs: 4, sm: 6 },
           maxWidth: 600,
           lineHeight: 1.5,
         }}
       >
-        We&apos;ll guide you through a few quick steps to personalize
-        your account and enable funding. It only takes a few
-        minutes, you can save and resume anytime.
+        We&apos;ll guide you through a few quick steps to personalize your account and enable funding. It only takes a few minutes, you can save and resume anytime.
       </Typography>
 
       {/* Action Buttons */}
@@ -84,6 +81,7 @@ export default function WelcomeStep({ onNext, onSkip }: WelcomeStepProps) {
           variant="contained"
           size="medium"
           onClick={onNext}
+          aria-label="Start onboarding setup"
           sx={{
             px: 4,
             py: 1,

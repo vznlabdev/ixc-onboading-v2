@@ -51,14 +51,14 @@ const steps: OnboardingStep[] = [
     icon: <Description />,
   },
   {
-    label: 'Factoring Agreement',
-    description: 'Sign the agreement.',
-    icon: <Assignment />,
-  },
-  {
     label: 'Review',
     description: 'Check and confirm setup.',
     icon: <CheckCircle />,
+  },
+  {
+    label: 'Factoring Agreement',
+    description: 'Sign the agreement.',
+    icon: <Assignment />,
   },
 ];
 

@@ -18,7 +18,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="antialiased" style={{ fontFamily: 'Mona Sans, sans-serif' }}>
+      <head>
+        <meta name="emotion-insertion-point" content="" />
+      </head>
+      <body className="antialiased" style={{ fontFamily: 'Mona Sans, sans-serif' }} suppressHydrationWarning>
         <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
