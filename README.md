@@ -223,6 +223,8 @@ All async operations show loading feedback:
 - Email validation
 - 15-minute link expiry with countdown
 - Resend functionality
+- Split-screen layout with hero images
+- Demo skip button for testing
 
 ### Onboarding
 - **Progressive disclosure** - Complex forms use dialogs
@@ -233,6 +235,17 @@ All async operations show loading feedback:
 - **Edit functionality** - Edit any step from review
 - **Form validation** - Real-time error feedback
 - **Trust signals** - Security badges, encryption notices
+- **Smart navigation** - Edit returns to review, not next step
+
+### Mobile Optimizations
+- **Hidden sidebar** - Sidebar hidden on mobile, shows on desktop
+- **Mobile header** - Logo and step counter (Step X of 7)
+- **Touch targets** - Minimum 44px height on all buttons
+- **Optimized padding** - Reduced spacing for mobile screens
+- **Responsive typography** - Smaller fonts on mobile
+- **Full-width forms** - Forms take full screen width on mobile
+- **Responsive grids** - 1 column mobile → 2-4 columns desktop
+- **Mobile-friendly dialogs** - Proper margins and spacing
 
 ### Special Components
 
@@ -271,6 +284,9 @@ All async operations show loading feedback:
 - Use responsive values: `{ xs: value, sm: value, md: value }`
 - Border radius: 2 (8px) for consistency
 - Use theme typography variants when possible
+- **Mobile-first approach** - Start with mobile, add desktop enhancements
+- **Touch targets** - Minimum 44px for interactive elements
+- **Spacing** - Use responsive padding: `px: { xs: 2, sm: 4 }`
 
 ### Form Validation
 
@@ -378,12 +394,34 @@ Or connect your GitHub repo to Vercel for automatic deployments.
 3. Set up email service
 4. Configure Plaid (for bank connections)
 
+## Mobile-First Design
+
+### Mobile View Features
+- **Adaptive layout** - Sidebar hidden, content full-width
+- **Step indicator** - Mobile header shows current progress
+- **Optimized spacing** - Reduced padding for small screens
+- **Touch-friendly** - 44px minimum touch targets
+- **Responsive typography** - Font sizes scale down appropriately
+- **Vertical layouts** - Forms stack vertically on mobile
+
+### Breakpoints
+- **xs** (0px+) - Mobile phones
+- **sm** (600px+) - Tablets
+- **md** (900px+) - Desktop (sidebar appears)
+- **lg** (1200px+) - Large desktop
+
+### Testing Mobile
+- Use Chrome DevTools device emulation
+- Test on actual devices (iOS/Android)
+- Common sizes: iPhone 14 (390px), iPad (768px), Desktop (1440px)
+
 ## Browser Support
 
 - Chrome/Edge (latest)
 - Firefox (latest)
 - Safari (latest)
 - Mobile browsers (iOS Safari, Chrome Mobile)
+- Responsive from 320px to 4K displays
 
 ## Performance
 
@@ -391,6 +429,8 @@ Or connect your GitHub repo to Vercel for automatic deployments.
 - Images optimized with Next.js Image component (where applicable)
 - Code splitting by route
 - Material UI CSS-in-JS with emotion cache for SSR
+- Lazy loading for optimal mobile performance
+- Minimal bundle size with tree shaking
 
 ## Accessibility
 
