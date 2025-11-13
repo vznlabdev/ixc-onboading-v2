@@ -133,6 +133,16 @@ const theme = createTheme({
           textTransform: 'none',
           borderRadius: 8,
           fontWeight: 500,
+          minHeight: 44, // Minimum touch target size for mobile
+        },
+      },
+    },
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          '& .MuiOutlinedInput-input': {
+            padding: '14px', // Better touch target
+          },
         },
       },
     },

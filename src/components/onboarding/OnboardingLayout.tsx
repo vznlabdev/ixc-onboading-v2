@@ -99,6 +99,33 @@ export default function OnboardingLayout({
         />
       </Box>
 
+      {/* Mobile Header */}
+      <Box
+        sx={{
+          display: { xs: 'flex', md: 'none' },
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          p: 2,
+          backgroundColor: 'white',
+          borderBottom: '1px solid #E9EAEB',
+        }}
+      >
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+          <Box
+            component="img"
+            src="/incoxchange-logomark.svg"
+            alt="IncoXchange Logo"
+            sx={{ width: 24, height: 24 }}
+          />
+          <Typography sx={{ fontSize: '1rem', fontWeight: 600, color: '#181D27' }}>
+            incoXchange
+          </Typography>
+        </Box>
+        <Typography sx={{ fontSize: '0.875rem', color: '#535862' }}>
+          Step {activeStep + 1} of 7
+        </Typography>
+      </Box>
+
       <Box
         sx={{
           display: 'flex',
@@ -108,6 +135,7 @@ export default function OnboardingLayout({
       {/* Left Sidebar - Steps */}
       <Box
         sx={{
+          display: { xs: 'none', md: 'block' },
           width: 320,
           backgroundColor: '#F5F5F5',
           borderRight: '1px solid #E9EAEB',
@@ -204,10 +232,10 @@ export default function OnboardingLayout({
         </Stepper>
       </Box>
 
-        {/* Right Content Area */}
-        <Box sx={{ flex: 1, backgroundColor: 'white' }}>
-          {children}
-        </Box>
+      {/* Right Content Area */}
+      <Box sx={{ flex: 1, backgroundColor: 'white', width: { xs: '100%', md: 'auto' } }}>
+        {children}
+      </Box>
       </Box>
     </Box>
   );

@@ -97,9 +97,10 @@ export default function SignInPage() {
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          px: { xs: 4, sm: 8 },
-          py: 6,
+          px: { xs: 3, sm: 8 },
+          py: { xs: 4, sm: 6 },
           maxWidth: { xs: '100%', md: '50%' },
+          minHeight: { xs: '100vh', md: 'auto' },
         }}
       >
         {/* Content */}
