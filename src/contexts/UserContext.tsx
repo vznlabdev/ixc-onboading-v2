@@ -39,9 +39,11 @@ interface UserContextType {
   applicationStatus: 'pending' | 'under_review' | 'approved' | 'rejected';
   submittedAt: Date | null;
   isLoading: boolean;
+  currentStep: number;
   signIn: (email: string) => void;
   signOut: () => void;
   saveOnboardingData: (data: OnboardingData) => void;
+  saveCurrentStep: (step: number) => void;
   submitApplication: () => void;
 }
 
@@ -53,9 +55,12 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const [onboardingData, setOnboardingData] = useState<OnboardingData | null>(null);
   const [applicationStatus, setApplicationStatus] = useState<'pending' | 'under_review' | 'approved' | 'rejected'>('pending');
   const [submittedAt, setSubmittedAt] = useState<Date | null>(null);
+  const [currentStep, setCurrentStep] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 
   // Load data from localStorage on mount (client-side only)
+  // This is intentional initialization from localStorage, not a side effect
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     console.log('Loading data from localStorage...');
     const savedAuth = localStorage.getItem('isAuthenticated');
@@ -63,6 +68,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
     const savedOnboardingData = localStorage.getItem('onboardingData');
     const savedStatus = localStorage.getItem('applicationStatus');
     const savedSubmittedAt = localStorage.getItem('submittedAt');
+    const savedStep = localStorage.getItem('currentStep');
 
     console.log('Loaded onboarding data from localStorage:', savedOnboardingData);
 
@@ -83,15 +89,20 @@ export function UserProvider({ children }: { children: ReactNode }) {
     }
 
     if (savedStatus) {
-      setApplicationStatus(savedStatus as any);
+      setApplicationStatus(savedStatus as 'pending' | 'under_review' | 'approved' | 'rejected');
     }
 
     if (savedSubmittedAt) {
       setSubmittedAt(new Date(savedSubmittedAt));
     }
 
+    if (savedStep) {
+      setCurrentStep(parseInt(savedStep, 10));
+    }
+
     setIsLoading(false);
   }, []);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const signIn = (email: string) => {
     setIsAuthenticated(true);
@@ -116,12 +127,20 @@ export function UserProvider({ children }: { children: ReactNode }) {
     console.log('Saved to localStorage:', localStorage.getItem('onboardingData'));
   };
 
+  const saveCurrentStep = (step: number) => {
+    console.log('Saving current step:', step);
+    setCurrentStep(step);
+    localStorage.setItem('currentStep', step.toString());
+  };
+
   const submitApplication = () => {
     const now = new Date();
     setApplicationStatus('under_review');
     setSubmittedAt(now);
+    setCurrentStep(0); // Reset step after submission
     localStorage.setItem('applicationStatus', 'under_review');
     localStorage.setItem('submittedAt', now.toISOString());
+    localStorage.removeItem('currentStep'); // Clear saved step
   };
 
   return (
@@ -132,10 +151,12 @@ export function UserProvider({ children }: { children: ReactNode }) {
         onboardingData,
         applicationStatus,
         submittedAt,
+        currentStep,
         isLoading,
         signIn,
         signOut,
         saveOnboardingData,
+        saveCurrentStep,
         submitApplication,
       }}
     >

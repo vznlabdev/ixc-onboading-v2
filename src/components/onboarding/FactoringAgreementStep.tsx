@@ -13,7 +13,6 @@ import {
 } from '@mui/material';
 import {
   Description as DescriptionIcon,
-  CheckCircle as CheckCircleIcon,
   Celebration as CelebrationIcon,
 } from '@mui/icons-material';
 

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { Box, Typography } from '@mui/material';
 import { useUser } from '@/contexts/UserContext';
 import OnboardingLayout from '@/components/onboarding/OnboardingLayout';
 import WelcomeStep from '@/components/onboarding/WelcomeStep';
@@ -44,9 +45,17 @@ interface OnboardingData {
 
 export default function OnboardingPage() {
   const router = useRouter();
-  const { saveOnboardingData, onboardingData: savedData, submitApplication } = useUser();
-  const [activeStep, setActiveStep] = useState(0);
+  const { 
+    saveOnboardingData, 
+    onboardingData: savedData, 
+    currentStep: savedStep,
+    saveCurrentStep,
+    submitApplication,
+    applicationStatus 
+  } = useUser();
+  const [activeStep, setActiveStep] = useState(savedStep || 0);
   const [isEditingFromReview, setIsEditingFromReview] = useState(false);
+  const [hasInitialized, setHasInitialized] = useState(false);
 
   // Initialize with empty data
   const emptyData: OnboardingData = {
@@ -75,10 +84,27 @@ export default function OnboardingPage() {
   // Sync with context data on mount only
   useEffect(() => {
     console.log('OnboardingPage - Initial savedData from context:', savedData);
+    console.log('OnboardingPage - Saved step:', savedStep);
+    
     if (savedData) {
       console.log('OnboardingPage - Initializing with saved data');
       setOnboardingData(savedData);
     }
+    
+    // If application is already submitted, redirect to dashboard
+    if (applicationStatus !== 'pending') {
+      console.log('OnboardingPage - Application already submitted, redirecting to dashboard');
+      router.push('/dashboard');
+      return;
+    }
+    
+    // Set the saved step if available
+    if (savedStep > 0) {
+      console.log('OnboardingPage - Resuming from step:', savedStep);
+      setActiveStep(savedStep);
+    }
+    
+    setHasInitialized(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Only run on mount
 
@@ -86,6 +112,14 @@ export default function OnboardingPage() {
   useEffect(() => {
     console.log('OnboardingPage - Local onboardingData changed:', onboardingData);
   }, [onboardingData]);
+
+  // Save current step whenever it changes
+  useEffect(() => {
+    if (hasInitialized && applicationStatus === 'pending') {
+      console.log('OnboardingPage - Saving current step:', activeStep);
+      saveCurrentStep(activeStep);
+    }
+  }, [activeStep, hasInitialized, applicationStatus, saveCurrentStep]);
 
   const handleNext = () => {
     console.log('handleNext called - current step:', activeStep);
@@ -217,6 +251,42 @@ export default function OnboardingPage() {
         return null;
     }
   };
+
+  // Show loading if not initialized yet
+  if (!hasInitialized) {
+    return (
+      <Box
+        sx={{
+          minHeight: '100vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Box sx={{ textAlign: 'center' }}>
+          <Box
+            sx={{
+              width: 40,
+              height: 40,
+              border: '4px solid #E9EAEB',
+              borderTop: '4px solid #2164ef',
+              borderRadius: '50%',
+              animation: 'spin 1s linear infinite',
+              margin: '0 auto',
+              mb: 2,
+              '@keyframes spin': {
+                '0%': { transform: 'rotate(0deg)' },
+                '100%': { transform: 'rotate(360deg)' },
+              },
+            }}
+          />
+          <Typography sx={{ fontSize: '0.875rem', color: '#717680' }}>
+            Loading...
+          </Typography>
+        </Box>
+      </Box>
+    );
+  }
 
   return (
     <OnboardingLayout activeStep={activeStep}>
