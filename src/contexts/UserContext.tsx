@@ -59,6 +59,8 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   // Load data from localStorage on mount (client-side only)
+  // This is intentional initialization from localStorage, not a side effect
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     console.log('Loading data from localStorage...');
     const savedAuth = localStorage.getItem('isAuthenticated');
@@ -70,7 +72,6 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
     console.log('Loaded onboarding data from localStorage:', savedOnboardingData);
 
-    // eslint-disable-next-line react-compiler/react-compiler
     if (savedAuth === 'true' && savedEmail) {
       setIsAuthenticated(true);
       setUserEmail(savedEmail);
@@ -101,6 +102,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
     setIsLoading(false);
   }, []);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const signIn = (email: string) => {
     setIsAuthenticated(true);
