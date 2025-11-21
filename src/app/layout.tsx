@@ -4,6 +4,7 @@ import "@fontsource/mona-sans/500.css";
 import "@fontsource/mona-sans/600.css";
 import "@fontsource/mona-sans/700.css";
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/next";
 import ThemeProvider from "@/components/ThemeProvider";
 import { UserProvider } from "@/contexts/UserContext";
 import DebugPanel from "@/components/DebugPanel";
@@ -27,6 +28,7 @@ export default function RootLayout({
             <DebugPanel />
           </UserProvider>
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
