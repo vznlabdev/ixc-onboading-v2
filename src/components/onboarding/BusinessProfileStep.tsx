@@ -82,21 +82,28 @@ export default function BusinessProfileStep({
     }
     
     setErrors(newErrors);
+    console.log('Validation errors:', newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleContinue = () => {
+    console.log('BusinessProfileStep - Current form data:', formData);
     if (validateForm()) {
       setIsSaving(true);
+      console.log('BusinessProfileStep - Validation passed, saving form data:', formData);
       // Save data
       if (onSave) {
         onSave(formData);
+      } else {
+        console.warn('BusinessProfileStep - onSave callback is not provided!');
       }
       // Simulate saving
       setTimeout(() => {
         setIsSaving(false);
         onNext();
       }, 800);
+    } else {
+      console.log('BusinessProfileStep - Validation failed, not proceeding');
     }
   };
 

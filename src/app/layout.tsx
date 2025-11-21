@@ -5,6 +5,8 @@ import "@fontsource/mona-sans/600.css";
 import "@fontsource/mona-sans/700.css";
 import "./globals.css";
 import ThemeProvider from "@/components/ThemeProvider";
+import { UserProvider } from "@/contexts/UserContext";
+import DebugPanel from "@/components/DebugPanel";
 
 export const metadata: Metadata = {
   title: "IncoXchange - Onboarding",
@@ -18,11 +20,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-        <meta name="emotion-insertion-point" content="" />
-      </head>
       <body className="antialiased" style={{ fontFamily: 'Mona Sans, sans-serif' }} suppressHydrationWarning>
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          <UserProvider>
+            {children}
+            <DebugPanel />
+          </UserProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

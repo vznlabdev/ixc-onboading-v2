@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useEffect, useState, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { useUser } from '@/contexts/UserContext';
 import {
   Box,
   Typography,
@@ -10,7 +11,9 @@ import {
 } from '@mui/material';
 
 function VerifyEmailContent() {
+  const router = useRouter();
   const searchParams = useSearchParams();
+  const { signIn } = useUser();
   const emailParam = searchParams.get('email') || 'youremail@gmail.com';
   const [countdown, setCountdown] = useState(15 * 60); // 15 minutes in seconds
   const [canResend, setCanResend] = useState(false);
@@ -219,7 +222,10 @@ function VerifyEmailContent() {
             <Button
               variant="outlined"
               fullWidth
-              href="/onboarding"
+              onClick={() => {
+                signIn(emailParam);
+                router.push('/onboarding');
+              }}
               sx={{
                 py: 1,
                 fontSize: '0.875rem',

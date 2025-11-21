@@ -2,10 +2,6 @@
 
 import { createTheme, ThemeProvider as MUIThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import { CacheProvider } from '@emotion/react';
-import createEmotionCache from '@/lib/emotion-cache';
-
-const clientSideEmotionCache = createEmotionCache();
 
 const theme = createTheme({
   palette: {
@@ -155,12 +151,10 @@ export default function ThemeProvider({
   children: React.ReactNode;
 }) {
   return (
-    <CacheProvider value={clientSideEmotionCache}>
-      <MUIThemeProvider theme={theme}>
-        <CssBaseline />
-        {children}
-      </MUIThemeProvider>
-    </CacheProvider>
+    <MUIThemeProvider theme={theme}>
+      <CssBaseline />
+      {children}
+    </MUIThemeProvider>
   );
 }
 

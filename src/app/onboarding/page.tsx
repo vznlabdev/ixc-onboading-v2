@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useUser } from '@/contexts/UserContext';
 import OnboardingLayout from '@/components/onboarding/OnboardingLayout';
 import WelcomeStep from '@/components/onboarding/WelcomeStep';
 import BusinessProfileStep from '@/components/onboarding/BusinessProfileStep';
@@ -43,9 +44,12 @@ interface OnboardingData {
 
 export default function OnboardingPage() {
   const router = useRouter();
+  const { saveOnboardingData, onboardingData: savedData, submitApplication } = useUser();
   const [activeStep, setActiveStep] = useState(0);
   const [isEditingFromReview, setIsEditingFromReview] = useState(false);
-  const [onboardingData, setOnboardingData] = useState<OnboardingData>({
+
+  // Initialize with empty data
+  const emptyData: OnboardingData = {
     businessProfile: {
       businessName: '',
       businessType: '',
@@ -64,22 +68,54 @@ export default function OnboardingPage() {
       isManual: false,
     },
     invoices: [],
-  });
+  };
+
+  const [onboardingData, setOnboardingData] = useState<OnboardingData>(emptyData);
+
+  // Sync with context data on mount only
+  useEffect(() => {
+    console.log('OnboardingPage - Initial savedData from context:', savedData);
+    if (savedData) {
+      console.log('OnboardingPage - Initializing with saved data');
+      setOnboardingData(savedData);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Only run on mount
+
+  // Debug: Log when onboardingData changes
+  useEffect(() => {
+    console.log('OnboardingPage - Local onboardingData changed:', onboardingData);
+  }, [onboardingData]);
 
   const handleNext = () => {
+    console.log('handleNext called - current step:', activeStep);
+    console.log('handleNext - current onboardingData:', onboardingData);
+    
+    // NOTE: We DON'T save here because each step already saves via their onSave callback
+    // Saving here would overwrite with stale state due to React's async state updates
+
     // If editing from review, return to review
     if (isEditingFromReview) {
       setActiveStep(5); // Review step
       setIsEditingFromReview(false);
     } else if (activeStep < 6) {
+      console.log('Moving to next step:', activeStep + 1);
       setActiveStep((prev) => prev + 1);
     } else {
-      // Complete onboarding
+      // Complete onboarding - submit application
+      console.log('Completing onboarding, submitting application');
+      // Save one final time before submitting
+      saveOnboardingData(onboardingData);
+      submitApplication();
       router.push('/dashboard');
     }
   };
 
   const handleSkip = () => {
+    console.log('Skipping step, current data:', onboardingData);
+    // NOTE: We save here because skip doesn't trigger onSave callbacks
+    saveOnboardingData(onboardingData);
+    
     // If editing from review, go back to review
     if (isEditingFromReview) {
       setActiveStep(5); // Review step
@@ -95,19 +131,35 @@ export default function OnboardingPage() {
   };
 
   const updateBusinessProfile = (data: OnboardingData['businessProfile']) => {
-    setOnboardingData(prev => ({ ...prev, businessProfile: data }));
+    console.log('updateBusinessProfile called with:', data);
+    const updatedData = { ...onboardingData, businessProfile: data };
+    setOnboardingData(updatedData);
+    saveOnboardingData(updatedData);
+    console.log('Business profile updated in state and localStorage');
   };
 
   const updateCustomers = (customers: OnboardingData['customers']) => {
-    setOnboardingData(prev => ({ ...prev, customers }));
+    console.log('updateCustomers called with:', customers);
+    const updatedData = { ...onboardingData, customers };
+    setOnboardingData(updatedData);
+    saveOnboardingData(updatedData);
+    console.log('Customers updated in state and localStorage');
   };
 
   const updateBankConnection = (bank: OnboardingData['bankConnection']) => {
-    setOnboardingData(prev => ({ ...prev, bankConnection: bank }));
+    console.log('updateBankConnection called with:', bank);
+    const updatedData = { ...onboardingData, bankConnection: bank };
+    setOnboardingData(updatedData);
+    saveOnboardingData(updatedData);
+    console.log('Bank connection updated in state and localStorage');
   };
 
   const updateInvoices = (invoices: OnboardingData['invoices']) => {
-    setOnboardingData(prev => ({ ...prev, invoices }));
+    console.log('updateInvoices called with:', invoices);
+    const updatedData = { ...onboardingData, invoices };
+    setOnboardingData(updatedData);
+    saveOnboardingData(updatedData);
+    console.log('Invoices updated in state and localStorage');
   };
 
   const renderStepContent = () => {
