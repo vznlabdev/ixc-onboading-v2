@@ -97,8 +97,15 @@ export default function DashboardPage() {
     return null;
   }
 
-  // Show message if no onboarding data
-  if (!onboardingData) {
+  // Show message if no onboarding data or incomplete
+  const hasOnboardingData = onboardingData && (
+    onboardingData.businessProfile.businessName ||
+    onboardingData.customers.length > 0 ||
+    onboardingData.bankConnection.bankName ||
+    onboardingData.invoices.length > 0
+  );
+
+  if (!hasOnboardingData && applicationStatus === 'pending') {
     return (
       <Box
         sx={{
@@ -417,23 +424,43 @@ export default function DashboardPage() {
           )}
         </Box>
 
-        {/* Back to Onboarding Button (only show if not submitted) */}
+        {/* Continue/Back to Onboarding Button (only show if not submitted) */}
         {applicationStatus === 'pending' && (
-          <Box sx={{ mb: 3 }}>
-            <Button
-              startIcon={<BackIcon />}
-              onClick={handleBackToOnboarding}
-              sx={{
-                fontSize: '0.875rem',
-                color: '#2164ef',
-                textTransform: 'none',
-                '&:hover': {
-                  backgroundColor: '#eff6ff',
-                },
-              }}
-            >
-              Back to Onboarding
-            </Button>
+          <Box 
+            sx={{ 
+              mb: 3,
+              p: 3,
+              backgroundColor: '#fef3c7',
+              borderRadius: 2,
+              border: '1px solid #fde68a',
+            }}
+          >
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 2 }}>
+              <Box>
+                <Typography sx={{ fontSize: '0.875rem', fontWeight: 600, color: '#92400e', mb: 0.5 }}>
+                  ⚠️ Application Not Submitted
+                </Typography>
+                <Typography sx={{ fontSize: '0.75rem', color: '#78350f' }}>
+                  Your application is incomplete. Continue where you left off to submit it for review.
+                </Typography>
+              </Box>
+              <Button
+                variant="contained"
+                startIcon={<BackIcon />}
+                onClick={handleBackToOnboarding}
+                sx={{
+                  fontSize: '0.875rem',
+                  fontWeight: 500,
+                  borderRadius: 2,
+                  backgroundColor: '#2164ef',
+                  '&:hover': {
+                    backgroundColor: '#1a4edb',
+                  },
+                }}
+              >
+                Continue Application
+              </Button>
+            </Box>
           </Box>
         )}
 
@@ -473,7 +500,7 @@ export default function DashboardPage() {
                 Review the information you submitted for your application.
               </Typography>
             </Box>
-            <ApplicationPreview data={onboardingData} />
+            <ApplicationPreview data={onboardingData!} />
           </Box>
         </Box>
 
