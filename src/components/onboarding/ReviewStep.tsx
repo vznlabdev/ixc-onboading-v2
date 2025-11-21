@@ -60,6 +60,8 @@ export default function ReviewStep({
   onEdit,
   data,
 }: ReviewStepProps) {
+  console.log('ReviewStep - Received data:', data);
+  
   // Transform data for display
   const reviewData = {
     business: {
@@ -90,7 +92,7 @@ export default function ReviewStep({
       title: 'Business Profile',
       icon: <BusinessIcon />,
       step: 1,
-      completed: true,
+      completed: !!(data?.businessProfile.businessName && data?.businessProfile.ein),
       content: (
         <Box>
           <Typography sx={{ fontSize: '0.875rem', color: '#535862', mb: 1 }}>

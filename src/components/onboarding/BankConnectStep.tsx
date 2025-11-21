@@ -68,6 +68,9 @@ export default function BankConnectStep({
     accountType: '',
   });
 
+  console.log('BankConnectStep - initialBank:', initialBank);
+  console.log('BankConnectStep - onSave callback exists:', !!onSave);
+
   const handleBankSelect = (bankId: string) => {
     setSelectedBank(bankId);
   };
@@ -106,12 +109,16 @@ export default function BankConnectStep({
       if (isSuccess) {
         setConnectionStatus('success');
         // Save bank data
+        console.log('BankConnectStep - Saving automated bank connection:', bank);
         if (onSave && bank) {
           onSave({
             bankId: bank.id,
             bankName: bank.name,
             isManual: false,
           });
+          console.log('BankConnectStep - Bank data saved successfully');
+        } else {
+          console.warn('BankConnectStep - onSave callback not available!');
         }
         setTimeout(() => {
           onNext();
@@ -139,12 +146,16 @@ export default function BankConnectStep({
         if (isSuccess) {
           setConnectionStatus('success');
           // Save manual bank data
+          console.log('BankConnectStep - Saving manual bank connection:', manualFormData);
           if (onSave) {
             onSave({
               bankId: 'manual',
               bankName: manualFormData.bankName,
               isManual: true,
             });
+            console.log('BankConnectStep - Manual bank data saved successfully');
+          } else {
+            console.warn('BankConnectStep - onSave callback not available!');
           }
           setTimeout(() => {
             onNext();

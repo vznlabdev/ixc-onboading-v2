@@ -159,9 +159,15 @@ export default function InvoicesStep({
   const handleContinue = () => {
     setIsProcessing(true);
     
+    console.log('InvoicesStep - Uploaded files:', uploadedFiles);
     // Save invoice data
     if (onSave) {
-      onSave(uploadedFiles.map(f => ({ name: f.name, size: f.size })));
+      const invoiceData = uploadedFiles.map(f => ({ name: f.name, size: f.size }));
+      console.log('InvoicesStep - Saving invoice data:', invoiceData);
+      onSave(invoiceData);
+      console.log('InvoicesStep - Invoice data saved successfully');
+    } else {
+      console.warn('InvoicesStep - onSave callback not available!');
     }
     
     // Simulate scanning process for each file
@@ -326,24 +332,15 @@ export default function InvoicesStep({
                     )}
                   </Box>
                   <ListItemText
-                    primary={
-                      <Typography
-                        sx={{
-                          fontSize: '0.875rem',
-                          fontWeight: 500,
-                          color: '#181D27',
-                          mb: 0.5,
-                        }}
-                      >
-                        {file.name}
-                      </Typography>
-                    }
+                    primary={file.name}
                     secondary={
-                      <Box>
+                      <Box component="span" sx={{ display: 'block' }}>
                         <Typography
+                          component="span"
                           sx={{
                             fontSize: '0.75rem',
                             color: '#717680',
+                            display: 'block',
                           }}
                         >
                           {file.scanStatus === 'verified' && file.extractedData
@@ -354,11 +351,13 @@ export default function InvoicesStep({
                         </Typography>
                         {file.scanStatus === 'verified' && (
                           <Typography
+                            component="span"
                             sx={{
                               fontSize: '0.75rem',
                               color: '#10b981',
                               fontWeight: 500,
                               mt: 0.5,
+                              display: 'block',
                             }}
                           >
                             ✓ Verified successfully
@@ -366,6 +365,14 @@ export default function InvoicesStep({
                         )}
                       </Box>
                     }
+                    primaryTypographyProps={{
+                      sx: {
+                        fontSize: '0.875rem',
+                        fontWeight: 500,
+                        color: '#181D27',
+                        mb: 0.5,
+                      },
+                    }}
                   />
                 </ListItem>
               </React.Fragment>
@@ -572,24 +579,16 @@ export default function InvoicesStep({
                     )}
                   </Box>
                   <ListItemText
-                    primary={
-                      <Typography
-                        sx={{
-                          fontSize: '0.875rem',
-                          fontWeight: 500,
-                          color: '#181D27',
-                        }}
-                      >
-                        {file.name}
-                      </Typography>
-                    }
+                    primary={file.name}
                     secondary={
-                      <Box>
+                      <Box component="span" sx={{ display: 'block' }}>
                         <Typography
+                          component="span"
                           sx={{
                             fontSize: '0.75rem',
                             color: '#717680',
                             mb: file.status === 'uploading' ? 0.5 : 0,
+                            display: 'block',
                           }}
                         >
                           {formatFileSize(file.size)}
@@ -610,6 +609,13 @@ export default function InvoicesStep({
                         )}
                       </Box>
                     }
+                    primaryTypographyProps={{
+                      sx: {
+                        fontSize: '0.875rem',
+                        fontWeight: 500,
+                        color: '#181D27',
+                      },
+                    }}
                   />
                 </ListItem>
               </React.Fragment>
