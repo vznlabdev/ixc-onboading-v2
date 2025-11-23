@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -15,24 +15,48 @@ import {
   Description as DescriptionIcon,
   Celebration as CelebrationIcon,
 } from '@mui/icons-material';
+import { useUser } from '@/contexts/UserContext';
 
 interface FactoringAgreementStepProps {
   onNext: () => void;
   onSkip: () => void;
 }
 
+const AGREEMENT_VERSION = 'v1.0.0'; // Track version for legal purposes
+
 export default function FactoringAgreementStep({
   onNext,
   onSkip,
 }: FactoringAgreementStepProps) {
-  const [agreed, setAgreed] = useState(false);
-  const [signature, setSignature] = useState('');
+  const { factoringAgreement, saveFactoringAgreement } = useUser();
+  
+  // Initialize from saved data if available
+  const [agreed, setAgreed] = useState(factoringAgreement?.agreed || false);
+  const [signature, setSignature] = useState(factoringAgreement?.signature || '');
   const [isSigning, setIsSigning] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+
+  // Load saved agreement data on mount
+  useEffect(() => {
+    if (factoringAgreement) {
+      setAgreed(factoringAgreement.agreed);
+      setSignature(factoringAgreement.signature);
+    }
+  }, [factoringAgreement]);
 
   const handleSignAgreement = () => {
     if (agreed && signature.trim()) {
       setIsSigning(true);
+      
+      // Save the agreement data
+      const agreementData = {
+        agreed: true,
+        signature: signature.trim(),
+        signedAt: new Date(),
+        agreementVersion: AGREEMENT_VERSION,
+      };
+      
+      saveFactoringAgreement(agreementData);
       
       // Simulate signing process
       setTimeout(() => {

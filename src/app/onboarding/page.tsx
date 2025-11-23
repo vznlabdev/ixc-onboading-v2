@@ -51,7 +51,8 @@ export default function OnboardingPage() {
     currentStep: savedStep,
     saveCurrentStep,
     submitApplication,
-    applicationStatus 
+    applicationStatus,
+    isLoading
   } = useUser();
   const [activeStep, setActiveStep] = useState(savedStep || 0);
   const [isEditingFromReview, setIsEditingFromReview] = useState(false);
@@ -252,8 +253,8 @@ export default function OnboardingPage() {
     }
   };
 
-  // Show loading if not initialized yet
-  if (!hasInitialized) {
+  // Show loading if context is loading or not initialized yet
+  if (isLoading || !hasInitialized) {
     return (
       <Box
         sx={{
@@ -261,6 +262,7 @@ export default function OnboardingPage() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
+          backgroundColor: '#F5F5F5',
         }}
       >
         <Box sx={{ textAlign: 'center' }}>
