@@ -1,6 +1,6 @@
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
-import * as XLSX from 'xlsx';
+import ExcelJS from 'exceljs';
 import { Application } from './mockApplications';
 
 export type ReportType = 'pdf' | 'excel' | 'csv';
@@ -161,15 +161,34 @@ class ExportReportsService {
     format: ReportFormat = 'detailed',
     options: ReportOptions = {}
   ): Promise<Blob> {
-    const workbook = XLSX.utils.book_new();
+    const workbook = new ExcelJS.Workbook();
+    workbook.creator = 'IncoXchange';
+    workbook.created = new Date();
 
     // Summary Sheet
     const summaryData = this.prepareSummaryData(data);
-    const summarySheet = XLSX.utils.json_to_sheet(summaryData);
-    XLSX.utils.book_append_sheet(workbook, summarySheet, 'Summary');
+    const summarySheet = workbook.addWorksheet('Summary');
+    
+    if (summaryData.length > 0) {
+      summarySheet.columns = Object.keys(summaryData[0]).map(key => ({
+        header: key,
+        key: key,
+        width: Math.max(key.length + 5, 15)
+      }));
+      summarySheet.addRows(summaryData);
+      
+      // Style the header row
+      summarySheet.getRow(1).font = { bold: true };
+      summarySheet.getRow(1).fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FFE0E0E0' }
+      };
+    }
 
     // Detailed Applications Sheet
     if (format === 'detailed') {
+      const detailSheet = workbook.addWorksheet('Applications');
       const detailedData = data.map(app => ({
         'Application ID': app.id,
         'Business Name': app.businessName,
@@ -193,36 +212,79 @@ class ExportReportsService {
         'Documents Verified': app.documentsVerified ? 'Yes' : 'No',
       }));
 
-      const detailSheet = XLSX.utils.json_to_sheet(detailedData);
-      
-      // Auto-size columns
-      const columnWidths = Object.keys(detailedData[0] || {}).map(key => ({
-        wch: Math.max(key.length, ...detailedData.map(row => String(row[key as keyof typeof row]).length))
-      }));
-      detailSheet['!cols'] = columnWidths;
-
-      XLSX.utils.book_append_sheet(workbook, detailSheet, 'Applications');
+      if (detailedData.length > 0) {
+        detailSheet.columns = Object.keys(detailedData[0]).map(key => ({
+          header: key,
+          key: key,
+          width: Math.max(
+            key.length + 5,
+            ...detailedData.map(row => String(row[key as keyof typeof row]).length + 5)
+          )
+        }));
+        
+        detailSheet.addRows(detailedData);
+        
+        // Style the header row
+        detailSheet.getRow(1).font = { bold: true };
+        detailSheet.getRow(1).fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: 'FFE0E0E0' }
+        };
+      }
     }
 
     // Financial Analysis Sheet
     if (format === 'financial' || format === 'analytics') {
       const financialData = this.prepareFinancialData(data);
-      const financialSheet = XLSX.utils.json_to_sheet(financialData);
-      XLSX.utils.book_append_sheet(workbook, financialSheet, 'Financial Analysis');
+      const financialSheet = workbook.addWorksheet('Financial Analysis');
+      
+      if (financialData.length > 0) {
+        financialSheet.columns = Object.keys(financialData[0]).map(key => ({
+          header: key,
+          key: key,
+          width: Math.max(key.length + 5, 20)
+        }));
+        financialSheet.addRows(financialData);
+        
+        // Style the header row
+        financialSheet.getRow(1).font = { bold: true };
+        financialSheet.getRow(1).fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: 'FFE0E0E0' }
+        };
+      }
     }
 
     // Analytics Sheet
     if (format === 'analytics') {
       const analyticsData = this.prepareAnalyticsData(data);
-      const analyticsSheet = XLSX.utils.json_to_sheet(analyticsData);
-      XLSX.utils.book_append_sheet(workbook, analyticsSheet, 'Analytics');
+      const analyticsSheet = workbook.addWorksheet('Analytics');
+      
+      if (analyticsData.length > 0) {
+        analyticsSheet.columns = Object.keys(analyticsData[0]).map(key => ({
+          header: key,
+          key: key,
+          width: Math.max(key.length + 5, 20)
+        }));
+        analyticsSheet.addRows(analyticsData);
+        
+        // Style the header row
+        analyticsSheet.getRow(1).font = { bold: true };
+        analyticsSheet.getRow(1).fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: 'FFE0E0E0' }
+        };
+      }
     }
 
-    // Export to blob
-    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-    const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-    
-    return blob;
+    // Generate buffer and convert to blob
+    const buffer = await workbook.xlsx.writeBuffer();
+    return new Blob([buffer], { 
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' 
+    });
   }
 
   // Generate CSV Report
@@ -239,9 +301,24 @@ class ExportReportsService {
       submittedAt: new Date(app.submittedAt).toISOString(),
     }));
 
-    const worksheet = XLSX.utils.json_to_sheet(csvData);
-    const csv = XLSX.utils.sheet_to_csv(worksheet);
+    // Create CSV manually
+    const headers = Object.keys(csvData[0] || {});
+    const csvRows = [
+      headers.join(','),
+      ...csvData.map(row => 
+        headers.map(header => {
+          const value = row[header as keyof typeof row];
+          // Escape values containing commas or quotes
+          const stringValue = String(value);
+          if (stringValue.includes(',') || stringValue.includes('"') || stringValue.includes('\n')) {
+            return `"${stringValue.replace(/"/g, '""')}"`;
+          }
+          return stringValue;
+        }).join(',')
+      )
+    ];
     
+    const csv = csvRows.join('\n');
     return new Blob([csv], { type: 'text/csv' });
   }
 
