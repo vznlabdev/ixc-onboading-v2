@@ -35,11 +35,8 @@ import {
   X,
   Clock,
   TrendingUp,
-  TrendingDown,
-  Users,
   FileText,
   DollarSign,
-  Shield,
   LogOut,
   User,
   RefreshCw,
@@ -246,9 +243,24 @@ export default function AdminDashboardPage() {
               {/* Navigation */}
               <nav className="hidden md:flex items-center gap-6">
                 <button className="text-sm font-medium text-black">Applications</button>
-                <button className="text-sm font-medium text-gray-600 hover:text-black">Analytics</button>
-                <button className="text-sm font-medium text-gray-600 hover:text-black">Users</button>
-                <button className="text-sm font-medium text-gray-600 hover:text-black">Settings</button>
+                <button 
+                  onClick={() => router.push('/admin/analytics')}
+                  className="text-sm font-medium text-gray-600 hover:text-black"
+                >
+                  Analytics
+                </button>
+                <button 
+                  onClick={() => router.push('/admin/users')}
+                  className="text-sm font-medium text-gray-600 hover:text-black"
+                >
+                  Users
+                </button>
+                <button 
+                  onClick={() => router.push('/admin/audit')}
+                  className="text-sm font-medium text-gray-600 hover:text-black"
+                >
+                  Audit Log
+                </button>
               </nav>
             </div>
 
