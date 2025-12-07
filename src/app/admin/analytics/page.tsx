@@ -186,8 +186,18 @@ export default function AnalyticsPage() {
                   Applications
                 </button>
                 <button className="text-sm font-medium text-black">Analytics</button>
-                <button className="text-sm font-medium text-gray-600 hover:text-black">Users</button>
-                <button className="text-sm font-medium text-gray-600 hover:text-black">Settings</button>
+                <button 
+                  onClick={() => router.push('/admin/users')}
+                  className="text-sm font-medium text-gray-600 hover:text-black"
+                >
+                  Users
+                </button>
+                <button 
+                  onClick={() => router.push('/admin/audit')}
+                  className="text-sm font-medium text-gray-600 hover:text-black"
+                >
+                  Audit Log
+                </button>
               </nav>
             </div>
 
