@@ -1,28 +1,19 @@
 'use client';
 
 import React, { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import {
-  Box,
-  Typography,
-  TextField,
-  Button,
-  InputAdornment,
   Dialog,
-  DialogTitle,
   DialogContent,
-  DialogActions,
-  List,
-  ListItem,
-  ListItemText,
-  IconButton,
-  Divider,
-} from '@mui/material';
-import {
-  Email as EmailIcon,
-  Phone as PhoneIcon,
-  Delete as DeleteIcon,
-  Add as AddIcon,
-} from '@mui/icons-material';
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Mail, Phone, Trash2, Plus } from 'lucide-react';
 
 interface Customer {
   customerName: string;
@@ -127,370 +118,202 @@ export default function CustomersStep({
   };
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        minHeight: '100%',
-        px: { xs: 2, sm: 4 },
-        py: { xs: 4, sm: 6 },
-        maxWidth: 600,
-        mx: 'auto',
-      }}
-    >
+    <div className="flex flex-col items-center min-h-full px-4 sm:px-8 py-8 sm:py-12 max-w-[600px] mx-auto">
       {/* Title */}
-      <Typography
-        sx={{
-          fontSize: '1.875rem',
-          fontWeight: 600,
-          color: '#181D27',
-          mb: 2,
-          textAlign: 'center',
-        }}
-      >
+      <h1 className="text-3xl font-semibold text-[#181D27] mb-4 text-center">
         Add your customers
-      </Typography>
+      </h1>
 
       {/* Description */}
-      <Typography
-        sx={{
-          fontSize: '1rem',
-          fontWeight: 400,
-          color: '#535862',
-          mb: 2,
-          textAlign: 'center',
-          maxWidth: 500,
-        }}
-      >
+      <p className="text-base font-normal text-[#535862] mb-4 text-center max-w-[500px]">
         Create customer records to send invoices and track payments.
-      </Typography>
+      </p>
 
       {/* Additional Info */}
-      <Typography
-        sx={{
-          fontSize: '0.875rem',
-          fontWeight: 400,
-          color: '#717680',
-          mb: 4,
-          textAlign: 'center',
-          maxWidth: 500,
-        }}
-      >
+      <p className="text-sm font-normal text-[#717680] mb-8 text-center max-w-[500px]">
         You can add your regular customers now or skip and add them later from your dashboard.
-      </Typography>
+      </p>
 
       {/* Customers List or Empty State */}
-      <Box sx={{ width: '100%', mb: 4 }}>
+      <div className="w-full mb-8">
         {customers.length === 0 ? (
-          <Box
-            sx={{
-              border: '2px dashed #E9EAEB',
-              borderRadius: 2,
-              p: 4,
-              textAlign: 'center',
-              backgroundColor: '#FAFAFA',
-            }}
-          >
-            <Typography
-              sx={{
-                fontSize: '0.875rem',
-                color: '#717680',
-                mb: 2,
-              }}
-            >
+          <div className="border-2 border-dashed border-gray-200 rounded-lg p-8 text-center bg-gray-50">
+            <p className="text-sm text-gray-600 mb-4">
               No customers added yet
-            </Typography>
+            </p>
             <Button
-              variant="outlined"
-              startIcon={<AddIcon />}
               onClick={handleOpenDialog}
-              sx={{
-                fontSize: '0.875rem',
-                fontWeight: 500,
-                borderRadius: 2,
-              }}
+              size="default"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Add Customer
+            </Button>
+          </div>
+        ) : (
+          <div>
+            <div className="flex justify-between items-center mb-4">
+              <p className="text-sm font-semibold text-[#181D27]">
+                Customers ({customers.length})
+              </p>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleOpenDialog}
+                className="text-xs font-medium rounded-lg"
+              >
+                <Plus className="w-3 h-3 mr-1" />
+                Add Another
+              </Button>
+            </div>
+            <div className="border border-[#E9EAEB] rounded-lg bg-white divide-y divide-[#E9EAEB]">
+              {customers.map((customer, index) => (
+                <div
+                  key={index}
+                  className="p-4 flex items-start justify-between hover:bg-gray-50 transition-colors"
+                >
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-[#181D27] mb-1">
+                      {customer.customerName}
+                    </p>
+                    <p className="text-xs text-[#717680]">
+                      {customer.contactPerson} • {customer.email}
+                    </p>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleRemoveCustomer(index)}
+                    className="text-[#717680] hover:text-red-600 hover:bg-red-50 ml-2"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Add Customer Dialog */}
+      <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>
+              Add Customer
+            </DialogTitle>
+            <DialogDescription>
+              Add a new customer to your account
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex flex-col gap-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="customerName" className="text-sm font-medium text-black">
+                Customer Name <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                id="customerName"
+                placeholder="e.g. Greenfield Construction"
+                value={formData.customerName}
+                onChange={handleChange('customerName')}
+                className={errors.customerName ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}
+              />
+              {errors.customerName && (
+                <p className="text-xs text-red-600 mt-1">{errors.customerName}</p>
+              )}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="contactPerson" className="text-sm font-medium text-black">
+                Contact Person <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                id="contactPerson"
+                placeholder="e.g. John Doe"
+                value={formData.contactPerson}
+                onChange={handleChange('contactPerson')}
+                className={errors.contactPerson ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}
+              />
+              {errors.contactPerson && (
+                <p className="text-xs text-red-600 mt-1">{errors.contactPerson}</p>
+              )}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="email" className="text-sm font-medium text-black">
+                Email <span className="text-red-500">*</span>
+              </Label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="e.g. billing@greenfield.com"
+                  value={formData.email}
+                  onChange={handleChange('email')}
+                  className={`pl-10 ${errors.email ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
+                />
+              </div>
+              {errors.email && (
+                <p className="text-xs text-red-600 mt-1">{errors.email}</p>
+              )}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="phone" className="text-sm font-medium text-black">Phone</Label>
+              <div className="relative">
+                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                <Input
+                  id="phone"
+                  placeholder="(123) 456-7890"
+                  value={formData.phone}
+                  onChange={handleChange('phone')}
+                  className={`pl-10 ${errors.phone ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
+                />
+              </div>
+              {errors.phone && (
+                <p className="text-xs text-red-600 mt-1">{errors.phone}</p>
+              )}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="billingAddress" className="text-sm font-medium text-black">Billing Address</Label>
+              <Textarea
+                id="billingAddress"
+                placeholder="Add billing address"
+                value={formData.billingAddress}
+                onChange={handleChange('billingAddress')}
+                rows={3}
+                className="min-h-[80px] resize-none border-gray-200 bg-gray-50 focus:border-black focus:bg-white focus:ring-1 focus:ring-black"
+              />
+            </div>
+          </div>
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button
+              variant="ghost"
+              onClick={handleCloseDialog}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleAddCustomer}
             >
               Add Customer
             </Button>
-          </Box>
-        ) : (
-          <Box>
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                mb: 2,
-              }}
-            >
-              <Typography
-                sx={{
-                  fontSize: '0.875rem',
-                  fontWeight: 600,
-                  color: '#181D27',
-                }}
-              >
-                Customers ({customers.length})
-              </Typography>
-              <Button
-                variant="outlined"
-                size="small"
-                startIcon={<AddIcon />}
-                onClick={handleOpenDialog}
-                sx={{
-                  fontSize: '0.75rem',
-                  fontWeight: 500,
-                  borderRadius: 2,
-                }}
-              >
-                Add Another
-              </Button>
-            </Box>
-            <List
-              sx={{
-                border: '1px solid #E9EAEB',
-                borderRadius: 2,
-                backgroundColor: 'white',
-              }}
-            >
-              {customers.map((customer, index) => (
-                <React.Fragment key={index}>
-                  {index > 0 && <Divider />}
-                  <ListItem
-                    secondaryAction={
-                      <IconButton
-                        edge="end"
-                        onClick={() => handleRemoveCustomer(index)}
-                        sx={{
-                          color: '#717680',
-                          '&:hover': {
-                            color: '#d32f2f',
-                          },
-                        }}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    }
-                  >
-                    <ListItemText
-                      primary={
-                        <Typography
-                          sx={{
-                            fontSize: '0.875rem',
-                            fontWeight: 600,
-                            color: '#181D27',
-                          }}
-                        >
-                          {customer.customerName}
-                        </Typography>
-                      }
-                      secondary={
-                        <Typography
-                          sx={{
-                            fontSize: '0.75rem',
-                            color: '#717680',
-                          }}
-                        >
-                          {customer.contactPerson} • {customer.email}
-                        </Typography>
-                      }
-                    />
-                  </ListItem>
-                </React.Fragment>
-              ))}
-            </List>
-          </Box>
-        )}
-      </Box>
-
-      {/* Add Customer Dialog */}
-      <Dialog
-        open={openDialog}
-        onClose={handleCloseDialog}
-        maxWidth="sm"
-        fullWidth
-        PaperProps={{
-          sx: {
-            borderRadius: 2,
-            m: { xs: 2, sm: 3 },
-          },
-        }}
-      >
-        <DialogTitle
-          sx={{
-            fontSize: '1.25rem',
-            fontWeight: 600,
-            color: '#181D27',
-          }}
-        >
-          Add Customer
-        </DialogTitle>
-        <DialogContent>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5, pt: 2 }}>
-            <TextField
-              label="Customer Name"
-              required
-              placeholder="e.g. Greenfield Construction"
-              value={formData.customerName}
-              onChange={handleChange('customerName')}
-              error={!!errors.customerName}
-              helperText={errors.customerName}
-              variant="outlined"
-              fullWidth
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: 2,
-                },
-              }}
-            />
-            <TextField
-              label="Contact Person"
-              required
-              placeholder="e.g. John Doe"
-              value={formData.contactPerson}
-              onChange={handleChange('contactPerson')}
-              error={!!errors.contactPerson}
-              helperText={errors.contactPerson}
-              variant="outlined"
-              fullWidth
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: 2,
-                },
-              }}
-            />
-            <TextField
-              label="Email"
-              required
-              type="email"
-              placeholder="e.g. billing@greenfield.com"
-              value={formData.email}
-              onChange={handleChange('email')}
-              error={!!errors.email}
-              helperText={errors.email}
-              variant="outlined"
-              fullWidth
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <EmailIcon sx={{ color: '#717680', fontSize: 20 }} />
-                  </InputAdornment>
-                ),
-              }}
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: 2,
-                },
-              }}
-            />
-            <TextField
-              label="Phone"
-              placeholder="(123) 456-7890"
-              value={formData.phone}
-              onChange={handleChange('phone')}
-              error={!!errors.phone}
-              helperText={errors.phone}
-              variant="outlined"
-              fullWidth
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <PhoneIcon sx={{ color: '#717680', fontSize: 20 }} />
-                  </InputAdornment>
-                ),
-              }}
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: 2,
-                },
-              }}
-            />
-            <TextField
-              label="Billing Address"
-              placeholder="Add billing address"
-              value={formData.billingAddress}
-              onChange={handleChange('billingAddress')}
-              variant="outlined"
-              fullWidth
-              multiline
-              rows={3}
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: 2,
-                },
-              }}
-            />
-          </Box>
+          </DialogFooter>
         </DialogContent>
-        <DialogActions sx={{ p: 3, pt: 2 }}>
-          <Button
-            onClick={handleCloseDialog}
-            sx={{
-              fontSize: '0.875rem',
-              color: '#535862',
-            }}
-          >
-            Cancel
-          </Button>
-          <Button
-            onClick={handleAddCustomer}
-            variant="contained"
-            sx={{
-              fontSize: '0.875rem',
-              fontWeight: 500,
-              borderRadius: 2,
-              px: 3,
-            }}
-          >
-            Add Customer
-          </Button>
-        </DialogActions>
       </Dialog>
 
       {/* Action Buttons */}
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 2,
-          mt: 4,
-          width: '100%',
-          alignItems: 'center',
-        }}
-      >
+      <div className="flex flex-col gap-3 mt-8 w-full items-center">
         <Button
-          variant="contained"
-          size="medium"
           onClick={handleContinue}
-          sx={{
-            px: 4,
-            py: 1,
-            fontSize: '0.875rem',
-            fontWeight: 500,
-            borderRadius: 2,
-            minWidth: 150,
-          }}
+          size="lg"
         >
           Continue
         </Button>
         <Button
-          variant="text"
-          size="small"
+          variant="ghost"
           onClick={onSkip}
-          sx={{
-            fontSize: '0.875rem',
-            color: '#535862',
-            '&:hover': {
-              backgroundColor: 'transparent',
-              textDecoration: 'underline',
-            },
-          }}
         >
           Skip for now
         </Button>
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
 }
-

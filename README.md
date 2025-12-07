@@ -1,735 +1,392 @@
-# IXC Finance - Onboarding Application
+# IncoXchange - Invoice Factoring Platform
 
-A modern, production-ready authentication and onboarding experience for IncoXchange finance platform. Built with Next.js, React, TypeScript, Tailwind CSS, and Material UI.
+A production-ready invoice factoring application with customer onboarding and admin dashboard. Built with Next.js 16, React 19, TypeScript, Tailwind CSS v3, and shadcn/ui components.
 
-## ✨ Recent Updates (v2.0)
+## 🚀 Quick Start
 
-- ✅ **Enhanced State Management** - Comprehensive UserContext with 20+ fields
-- ✅ **Signature Persistence** - Legal compliance with factoring agreement tracking
-- ✅ **SSR-Safe Hydration** - Fixed hydration errors for seamless SSR/CSR
-- ✅ **Safe localStorage** - Error-handling utility for reliable persistence
-- ✅ **Timeline Tracking** - Complete audit trail of user journey
-- ✅ **Credit Terms Management** - Approval/rejection workflow with details
-- ✅ **Progress Tracking** - Step completion monitoring
-- ✅ **Production Ready** - Zero errors, fully typed, optimized
+```bash
+# Install dependencies
+npm install
 
-## Tech Stack
+# Run development server
+npm run dev
 
-- **Next.js 16.0.2** - React framework with App Router
-- **React 19.2.0** - UI library
-- **TypeScript 5** - Type safety
-- **Tailwind CSS 4** - Utility-first CSS framework
-- **Material UI** - React component library (@mui/material)
-- **Emotion** - CSS-in-JS styling (@emotion/react, @emotion/styled)
-- **Material UI Icons** - Icon library
-- **Mona Sans** - Custom typography (@fontsource/mona-sans)
-- **ESLint** - Code linting
+# Build for production
+npm run build
 
-## Project Structure
+# Start production server
+npm start
+```
+
+Access the application:
+- **Main Application**: http://localhost:3000
+- **Admin Dashboard**: http://localhost:3000/admin/dashboard
+- **Admin Demo Mode**: http://localhost:3000/admin/demo (auto-login)
+
+## 📁 Project Structure
 
 ```
 ixc-onboading/
 ├── src/
-│   ├── app/                         # Next.js App Router
-│   │   ├── layout.tsx               # Root layout with theme provider
-│   │   ├── page.tsx                 # Home page (redirects to /signup)
-│   │   ├── signup/                  # Sign up flow
-│   │   │   ├── page.tsx            # Sign up form with magic link
-│   │   │   └── verify/
-│   │   │       └── page.tsx        # Email verification screen
-│   │   ├── signin/                  # Sign in flow
-│   │   │   └── page.tsx            # Sign in form with magic link
-│   │   ├── onboarding/              # Multi-step onboarding
-│   │   │   └── page.tsx            # Onboarding orchestrator
-│   │   ├── dashboard/               # Dashboard
-│   │   │   └── page.tsx            # Main dashboard with status
-│   │   └── globals.css              # Global styles
+│   ├── app/                          # Next.js App Router pages
+│   │   ├── (auth)/                   # Authentication pages
+│   │   │   ├── signin/
+│   │   │   └── signup/
+│   │   ├── admin/                    # Admin dashboard
+│   │   │   ├── analytics/            # Analytics dashboard
+│   │   │   ├── audit/                # Audit logs
+│   │   │   ├── dashboard/            # Main admin dashboard
+│   │   │   ├── demo/                 # Demo mode (auto-login)
+│   │   │   ├── login/                # Admin login
+│   │   │   └── users/                # User management
+│   │   ├── dashboard/                # User dashboard
+│   │   └── onboarding/               # Multi-step onboarding
 │   ├── components/
-│   │   ├── ThemeProvider.tsx        # Material UI theme configuration
-│   │   ├── dashboard/               # Dashboard components
-│   │   │   ├── ApplicationStatus.tsx # Application status widget
-│   │   │   └── ApplicationPreview.tsx # Data preview
-│   │   └── onboarding/              # Onboarding step components
-│   │       ├── OnboardingLayout.tsx # Layout with sidebar stepper
-│   │       ├── WelcomeStep.tsx      # Step 1: Welcome
-│   │       ├── BusinessProfileStep.tsx # Step 2: Business info
-│   │       ├── CustomersStep.tsx    # Step 3: Add customers
-│   │       ├── BankConnectStep.tsx  # Step 4: Bank connection
-│   │       ├── InvoicesStep.tsx     # Step 5: Upload invoices
-│   │       ├── ReviewStep.tsx       # Step 6: Review all data
-│   │       └── FactoringAgreementStep.tsx # Step 7: Sign agreement
-│   ├── contexts/                    # React Context providers
-│   │   └── UserContext.tsx          # 🆕 v2.0 - Enhanced state management
-│   ├── utils/                       # Utility functions
-│   │   └── localStorage.ts          # 🆕 Safe localStorage with error handling
-│   └── lib/
-│       └── emotion-cache.ts         # Emotion cache for SSR
-├── public/                          # Static assets
-│   ├── incoxchange-logomark.svg     # Brand logo
-│   ├── banks/                       # Bank logos
-│   │   ├── plaid.svg
-│   │   ├── chase.svg
-│   │   ├── wells-fargo.svg
-│   │   └── bank-of-america.svg
-│   └── images/                      # Background images
-│       ├── bg-female-phone.png
-│       └── female-fruits.jpg
-├── CONTEXT_FIELDS_GUIDE.md          # 🆕 Complete UserContext API reference
-├── CONTEXT_UPGRADE_SUMMARY.md       # 🆕 v1.0 → v2.0 upgrade details
-├── HYDRATION_FIX.md                 # 🆕 SSR hydration fix documentation
-├── package.json                     # Dependencies
+│   │   ├── ui/                       # shadcn/ui components
+│   │   ├── dashboard/                # Dashboard components
+│   │   └── onboarding/               # Onboarding steps
+│   ├── contexts/
+│   │   ├── AdminAuthContext.tsx      # Admin authentication
+│   │   └── UserContext.tsx           # User state management
+│   ├── hooks/
+│   │   └── useKeyboardShortcuts.tsx  # Keyboard shortcuts
+│   ├── lib/
+│   │   ├── api.ts                    # API integration mock
+│   │   ├── auditLog.ts               # Audit logging service
+│   │   ├── comments.ts               # Comments system
+│   │   ├── demoData.ts               # Demo data generator
+│   │   ├── exportReports.ts          # Report export utilities
+│   │   ├── filterPresets.ts          # Filter management
+│   │   ├── mockApplications.ts       # Mock application data
+│   │   ├── notifications.ts          # Email notification service
+│   │   └── websocket.ts              # WebSocket service mock
+│   └── utils/
+│       └── localStorage.ts           # Safe localStorage wrapper
+├── public/                           # Static assets
+├── package.json                      # Dependencies
+├── tailwind.config.js               # Tailwind configuration
+├── postcss.config.mjs               # PostCSS configuration
 └── tsconfig.json                    # TypeScript configuration
 ```
 
-## Getting Started
-
-### Prerequisites
-
-- Node.js 18+ installed
-- npm, yarn, pnpm, or bun package manager
-
-### Installation
-
-1. Clone the repository and install dependencies:
-
-```bash
-npm install
-```
-
-2. Run the development server:
-
-```bash
-npm run dev
-```
-
-3. Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-## Available Scripts
-
-- `npm run dev` - Start development server with hot reload
-- `npm run build` - Build for production
-- `npm run start` - Start production server
-- `npm run lint` - Run ESLint
-
-## Design System
-
-### Color Palette
-
-**Primary - Azure Radiance:**
-- 50: `#eff6ff`
-- 100: `#daeaff`
-- 200: `#bedcff`
-- 300: `#91c6ff`
-- 400: `#5da7fd`
-- 500: `#2c7cf9`
-- 600: `#2164ef` (main)
-- 700: `#1a4edb`
-- 800: `#1b41b2`
-- 900: `#1c3a8c`
-
-**Gray Scale:**
-- 50: `#FAFAFA`
-- 100: `#F5F5F5`
-- 200: `#E9EAEB`
-- 300: `#D5D7DA`
-- 400: `#A4A7AE`
-- 500: `#717680`
-- 600: `#535862`
-- 700: `#414651`
-- 800: `#252B37`
-- 900: `#181D27`
-
-### Typography
-
-**Font Family:** Mona Sans
-
-**Type Scale:**
-- Display 2xl: 72px (h1)
-- Display xl: 60px (h2)
-- Display lg: 48px (h3)
-- Display md: 36px (h4)
-- Display sm: 30px (h5) - Used for main headings
-- Display xs: 24px (h6)
-- Text lg: 18px (subtitle1)
-- Text md: 16px (body1)
-- Text sm: 14px (body2)
-- Text xs: 12px (caption)
-
-**Font Weights:**
-- Regular: 400
-- Medium: 500
-- Semibold: 600
-- Bold: 700
-
-## Application Flow
-
-### Authentication
-
-1. **Sign Up** (`/signup`)
-   - User enters email
-   - Sends magic link
-   - Redirects to verification screen
-
-2. **Email Verification** (`/signup/verify`)
-   - Shows countdown timer (15 minutes)
-   - Resend link functionality
-   - Demo: "Skip to Onboarding" button
-
-3. **Sign In** (`/signin`)
-   - Same magic link flow for existing users
-
-### Onboarding Flow
-
-**7-Step Process:**
-
-1. **Welcome** - Introduction screen
-2. **Business Profile** - Company details with validation
-3. **Customers** - Add customers via dialog (multi-add supported)
-4. **Bank Connect** - Connect via Plaid/bank or manually
-5. **Invoices** - Upload invoices with drag & drop + scanning simulation
-6. **Review** - Review all data with edit functionality
-7. **Factoring Agreement** - E-signature and completion
-
-### State Management
-
-**Production-Grade State Management** with UserContext v2.0
-
-#### Core Features
-- ✅ **20+ State Fields** - User profile, timeline, credit terms, signatures
-- ✅ **SSR-Safe** - No hydration errors, works with Next.js App Router
-- ✅ **Type-Safe** - Full TypeScript support with exported interfaces
-- ✅ **Persistent** - Safe localStorage with error handling
-- ✅ **Legal Compliance** - Signature tracking with timestamps
-- ✅ **Progress Tracking** - Step completion monitoring
-- ✅ **Timeline Tracking** - Complete audit trail (started, submitted, approved/rejected)
-
-#### UserContext API
-
-```typescript
-import { useUser } from '@/contexts/UserContext';
-
-const {
-  // Authentication & User Info
-  isAuthenticated,
-  userEmail,
-  userProfile,                    // 🆕 fullName, phoneNumber, jobTitle
-  
-  // Onboarding Data
-  onboardingData,
-  factoringAgreement,             // 🆕 signature, signedAt, agreementVersion
-  
-  // Application Status & Timeline
-  applicationStatus,              // pending | under_review | approved | rejected
-  startedAt,                      // 🆕 When user first signed up
-  submittedAt,
-  approvedAt,                     // 🆕 When approved
-  rejectedAt,                     // 🆕 When rejected
-  lastActivityAt,                 // 🆕 Last interaction time
-  
-  // Decision & Terms
-  rejectionReason,                // 🆕 Why rejected
-  reviewNotes,                    // 🆕 Internal notes
-  creditTerms,                    // 🆕 creditLimit, factoringRate, approvedBy
-  
-  // Navigation & Progress
-  currentStep,
-  completedSteps,                 // 🆕 Array of completed step indices
-  isLoading,
-  
-  // Actions
-  signIn,
-  signOut,
-  saveUserProfile,                // 🆕
-  saveOnboardingData,
-  saveFactoringAgreement,         // 🆕 Save signatures
-  saveCurrentStep,
-  markStepCompleted,              // 🆕 Track progress
-  submitApplication,
-  updateApplicationDecision,      // 🆕 Admin approval/rejection
-} = useUser();
-```
-
-#### Data Structure
-
-```typescript
-interface OnboardingData {
-  businessProfile: {
-    businessName: string;
-    businessType: string;
-    industry: string;
-    ein: string;
-    state: string;
-    city: string;
-    street: string;
-    building: string;
-    zip: string;
-  };
-  customers: Array<{
-    customerName: string;
-    contactPerson: string;
-    email: string;
-    phone: string;
-    billingAddress: string;
-  }>;
-  bankConnection: {
-    bankId: string;
-    bankName: string;
-    isManual: boolean;
-  };
-  invoices: Array<{
-    name: string;
-    size: number;
-  }>;
-}
-```
-
-#### Key Features
-- ✅ **Data persists across steps** - Auto-saved to localStorage
-- ✅ **Pre-filled forms** when editing from Review
-- ✅ **Smart navigation** - Edit returns to review, not next step
-- ✅ **Automatic activity tracking** - Updates lastActivityAt on every save
-- ✅ **SSR-compatible** - Hydrates correctly without mismatches
-- ✅ **Error handling** - Graceful fallbacks for quota/private browsing
-
-## Component Patterns
-
-### Form Components
-
-All form steps follow this pattern:
-
-```typescript
-interface StepProps {
-  onNext: () => void;
-  onSkip: () => void;
-  initialData?: T;
-  onSave?: (data: T) => void;
-}
-```
-
-### Validation
-
-- Real-time validation with error states
-- Error messages displayed below fields
-- Errors clear when user types
-- Form submit disabled until valid
-
-### Loading States
-
-All async operations show loading feedback:
-- Button text changes (e.g., "Saving...")
-- Spinners for long operations
-- Progress indicators
-
-## Key Features
-
-### Authentication
-- Passwordless magic link authentication
-- Email validation
-- 15-minute link expiry with countdown
-- Resend functionality
-- Split-screen layout with hero images
-- Demo skip button for testing
-
-### Onboarding
-- **Progressive disclosure** - Complex forms use dialogs
-- **Mobile responsive** - All screens adapt to mobile
-- **Accessibility** - ARIA labels, keyboard navigation
-- **Error handling** - Success/error states with animations
-- **State persistence** - Data saved across navigation with safe localStorage
-- **Edit functionality** - Edit any step from review
-- **Form validation** - Real-time error feedback
-- **Trust signals** - Security badges, encryption notices
-- **Smart navigation** - Edit returns to review, not next step
-- **Signature capture** - 🆕 Legal agreement with e-signature persistence
-- **Progress tracking** - 🆕 Track completed steps and overall progress
-- **SSR-optimized** - 🆕 No hydration errors, seamless server/client rendering
-
-### Mobile Optimizations
-- **Hidden sidebar** - Sidebar hidden on mobile, shows on desktop
-- **Mobile header** - Logo and step counter (Step X of 7)
-- **Touch targets** - Minimum 44px height on all buttons
-- **Optimized padding** - Reduced spacing for mobile screens
-- **Responsive typography** - Smaller fonts on mobile
-- **Full-width forms** - Forms take full screen width on mobile
-- **Responsive grids** - 1 column mobile → 2-4 columns desktop
-- **Mobile-friendly dialogs** - Proper margins and spacing
-
-### Special Components
-
-**Drag & Drop Upload** (`InvoicesStep`):
-- Accepts: PDF, DOCX, DOC, PNG, JPG, JPEG
-- Max size: 10MB per file
-- Visual feedback for drag state
-- Upload progress bars
-- File scanning simulation
-
-**Bank Selection** (`BankConnectStep`):
-- Visual bank selection with logos
-- Manual connection form
-- Connection simulation with success/error states
-- Security trust badges
-
-**Customer Management** (`CustomersStep`):
-- Dialog-based form
-- Multi-customer support
-- List with delete functionality
-- Email and phone validation
-
-**Factoring Agreement** (`FactoringAgreementStep`):
-- 🆕 Legal agreement display with scrollable content
-- 🆕 Electronic signature capture (typed name)
-- 🆕 Signature persistence with timestamp and version tracking
-- 🆕 Legal compliance ready with full audit trail
-- Agreement checkbox validation
-- Success animation on completion
-
-## Development Guidelines
-
-### Using UserContext
-
-The UserContext provides comprehensive state management. See `CONTEXT_FIELDS_GUIDE.md` for complete API reference.
-
-**Basic Usage:**
-
-```typescript
-import { useUser } from '@/contexts/UserContext';
-
-function MyComponent() {
-  const { 
-    onboardingData, 
-    saveOnboardingData,
-    markStepCompleted 
-  } = useUser();
-  
-  const handleSave = (data) => {
-    saveOnboardingData(data);
-    markStepCompleted(currentStep);
-  };
-}
-```
-
-**Tracking Signatures:**
-
-```typescript
-import { useUser } from '@/contexts/UserContext';
-
-function AgreementComponent() {
-  const { saveFactoringAgreement } = useUser();
-  
-  const handleSign = (signature: string) => {
-    saveFactoringAgreement({
-      agreed: true,
-      signature: signature,
-      signedAt: new Date(),
-      agreementVersion: 'v1.0.0'
-    });
-  };
-}
-```
-
-**Admin Decisions:**
-
-```typescript
-const { updateApplicationDecision } = useUser();
-
-// Approve
-updateApplicationDecision('approved', {
-  creditTerms: {
-    creditLimit: 100000,
-    factoringRate: 3.5,
-    approvedBy: 'Admin Name'
-  }
-});
-
-// Reject
-updateApplicationDecision('rejected', {
-  rejectionReason: 'Insufficient documentation'
-});
-```
-
-### Adding New Steps
-
-1. Create component in `src/components/onboarding/YourStep.tsx`
-2. Add to `OnboardingLayout.tsx` steps array
-3. Import and add to switch statement in `src/app/onboarding/page.tsx`
-4. Use UserContext for state management
-5. Call `markStepCompleted()` when step is done
-
-### Styling Guidelines
-
-- Use Material UI's `sx` prop for styling
-- Follow the design system colors (no arbitrary colors)
-- Use responsive values: `{ xs: value, sm: value, md: value }`
-- Border radius: 2 (8px) for consistency
-- Use theme typography variants when possible
-- **Mobile-first approach** - Start with mobile, add desktop enhancements
-- **Touch targets** - Minimum 44px for interactive elements
-- **Spacing** - Use responsive padding: `px: { xs: 2, sm: 4 }`
-
-### Form Validation
-
-```typescript
-const validateForm = () => {
-  const errors: Record<string, string> = {};
-  
-  if (!field.trim()) {
-    errors.field = 'Field is required';
-  }
-  
-  setErrors(errors);
-  return Object.keys(errors).length === 0;
-};
-```
-
-### TypeScript
-
-- All components use TypeScript
-- Define interfaces for props
-- Use proper types (avoid `any` unless necessary for MUI)
-- Type all state and functions
-- **Import shared types** from UserContext:
-
-```typescript
-import { 
-  OnboardingData, 
-  UserProfile, 
-  FactoringAgreement, 
-  CreditTerms 
-} from '@/contexts/UserContext';
-```
-
-## Environment Variables
-
-Currently none required for demo. For production, you'll need:
+## 🛠 Tech Stack
+
+| Technology | Version | Purpose |
+|------------|---------|---------|
+| **Next.js** | 16.0.2 | React framework with App Router |
+| **React** | 19.2.0 | UI library |
+| **TypeScript** | 5.x | Type safety |
+| **Tailwind CSS** | 3.4.0 | Utility-first CSS |
+| **shadcn/ui** | Latest | Component library |
+| **Radix UI** | Latest | Headless UI components |
+| **Recharts** | 2.15.0 | Data visualization |
+| **jsPDF** | 2.5.2 | PDF generation |
+| **xlsx** | 0.18.5 | Excel export |
+| **html2canvas** | 1.4.1 | Screenshot generation |
+| **lucide-react** | 0.469.0 | Icon library |
+| **sonner** | 1.7.1 | Toast notifications |
+
+## 🎯 Key Features
+
+### Customer Portal
+- **Magic Link Authentication** - Passwordless email authentication
+- **7-Step Onboarding Flow** - Business profile, customers, bank connection, invoices, review, agreement
+- **Document Upload** - Drag-and-drop invoice upload with progress tracking
+- **Bank Integration** - Plaid-ready bank connection flow
+- **E-Signature** - Digital signature for factoring agreements
+- **Application Tracking** - Real-time status updates
+
+### Admin Dashboard
+- **Application Management** - Review, approve, reject applications
+- **Analytics Dashboard** - Revenue projections, risk analysis, trends
+- **Document Verification** - Review uploaded documents
+- **Bulk Actions** - Multi-select operations
+- **Audit Trail** - Complete activity logging
+- **User Management** - Admin user CRUD operations
+- **Comments System** - Internal notes on applications
+- **Email Notifications** - Automated email templates
+- **Export Reports** - PDF, Excel, CSV export
+- **Real-time Updates** - WebSocket-ready architecture
+
+### Developer Features
+- **Demo Mode** - Auto-populated test data
+- **Keyboard Shortcuts** - Power user navigation
+- **Loading States** - Skeleton loaders
+- **Empty States** - User-friendly empty views
+- **Error Boundaries** - Graceful error handling
+- **Mobile Responsive** - Full mobile support
+- **Dark Mode Ready** - Theme variables configured
+- **TypeScript** - Full type coverage
+- **SSR Safe** - No hydration errors
+
+## 🔧 Configuration
+
+### Environment Variables
+
+Create a `.env.local` file:
 
 ```env
-NEXT_PUBLIC_API_URL=your_api_url
-EMAIL_SERVICE_API_KEY=your_email_service_key
+# API Configuration (Required for production)
+NEXT_PUBLIC_API_URL=http://localhost:3001
+NEXT_PUBLIC_WS_URL=ws://localhost:3001
+
+# Email Service (Required for magic links)
+EMAIL_SERVICE_API_KEY=your_sendgrid_key
+EMAIL_FROM_ADDRESS=noreply@incoxchange.com
+
+# Plaid Integration (Required for bank connections)
 PLAID_CLIENT_ID=your_plaid_client_id
 PLAID_SECRET=your_plaid_secret
+PLAID_ENV=sandbox
+
+# Database (Required for production)
+DATABASE_URL=postgresql://user:password@localhost:5432/incoxchange
+
+# Session Secret (Required for production)
+SESSION_SECRET=your-secret-key-min-32-chars
+
+# Optional: Analytics
+NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX
 ```
 
-## ✅ Completed Features (v2.0)
+### Admin Credentials (Demo)
 
-### State Management
-- [x] Comprehensive UserContext with 20+ fields
-- [x] Safe localStorage utility with error handling
-- [x] SSR-safe hydration (no mismatches)
-- [x] Signature persistence with timestamps
-- [x] Timeline tracking (started, submitted, approved/rejected)
-- [x] Progress tracking (completed steps)
-- [x] Credit terms management
-- [x] User profile storage
-- [x] Activity tracking (lastActivityAt)
-- [x] Full TypeScript support with exported interfaces
-- [x] Legal compliance (signature audit trail)
+For demo/development, use these credentials:
+- **Email**: admin@incoxchange.com
+- **Password**: admin123
 
-### Production Readiness
-- [x] Zero hydration errors
-- [x] Zero TypeScript errors
-- [x] Zero linter errors
-- [x] Successful build
-- [x] Mobile-responsive
-- [x] Accessible (ARIA, keyboard nav)
-- [x] Comprehensive documentation
+## 📝 API Endpoints Required
 
-## Known Issues & TODO
+The application expects these API endpoints (currently mocked in `lib/api.ts`):
 
 ### Authentication
-- [ ] Implement actual email sending (currently simulated)
-- [ ] Add magic link token generation and validation
-- [ ] Set up email service (SendGrid, AWS SES, etc.)
-- [ ] Add session management with JWT/cookies
+- `POST /api/auth/magic-link` - Send magic link email
+- `POST /api/auth/verify` - Verify magic link token
+- `POST /api/auth/logout` - Logout user
+- `GET /api/auth/session` - Get current session
 
-### Backend Integration
-- [ ] Connect UserContext to backend API
-- [ ] Database persistence (Prisma + PostgreSQL recommended)
-- [ ] API endpoints for CRUD operations
-- [ ] Signature verification system
+### Applications
+- `GET /api/applications` - List applications
+- `GET /api/applications/:id` - Get application details
+- `POST /api/applications` - Submit new application
+- `PUT /api/applications/:id` - Update application
+- `PATCH /api/applications/:id/status` - Update status
 
-### Third-Party Integrations
-- [ ] Implement actual Plaid integration for bank connection
-- [ ] Add real document scanning/OCR for invoices
-- [ ] Email notification service
+### Admin
+- `POST /api/admin/login` - Admin login
+- `GET /api/admin/stats` - Dashboard statistics
+- `POST /api/admin/applications/:id/approve` - Approve application
+- `POST /api/admin/applications/:id/reject` - Reject application
+- `GET /api/admin/audit-logs` - Get audit logs
 
-### Dashboard Enhancements
-- [ ] Expand dashboard UI with more widgets
-- [ ] Add analytics and charts
-- [ ] Invoice management interface
-- [ ] Customer management page
-- [ ] Settings page with profile editing
-- [ ] Admin panel for application review
+### Documents
+- `POST /api/documents/upload` - Upload document
+- `GET /api/documents/:id` - Download document
+- `POST /api/documents/:id/verify` - Verify document
 
-### Testing & Monitoring
-- [ ] Add unit tests (Jest + React Testing Library)
-- [ ] Add E2E tests (Playwright/Cypress)
-- [ ] Set up CI/CD pipeline
-- [ ] Add error tracking (Sentry)
-- [ ] Add analytics (Google Analytics, Mixpanel)
-- [ ] Performance monitoring
+## 🚀 Deployment
 
-## Testing
+### Vercel (Recommended)
+
+```bash
+# Install Vercel CLI
+npm i -g vercel
+
+# Deploy
+vercel
+
+# Or link to GitHub for automatic deployments
+```
+
+### Docker
+
+```dockerfile
+FROM node:20-alpine AS builder
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+
+FROM node:20-alpine
+WORKDIR /app
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/package*.json ./
+RUN npm ci --production
+EXPOSE 3000
+CMD ["npm", "start"]
+```
+
+### Manual Deployment
+
+```bash
+# Build the application
+npm run build
+
+# Start production server
+NODE_ENV=production npm start
+```
+
+## 🧪 Testing
 
 ### Manual Testing Flow
 
-1. Start dev server: `npm run dev`
-2. Visit `http://localhost:3000` (redirects to `/signup`)
-3. Enter email → "Send magic link"
-4. Click "Skip to Onboarding" (demo button)
-5. Complete all 7 onboarding steps
-6. Sign agreement → Redirect to dashboard
+1. **Customer Onboarding**:
+   ```
+   /signup → Enter email → Verify → Onboarding (7 steps) → Dashboard
+   ```
+
+2. **Admin Flow**:
+   ```
+   /admin/login → Dashboard → Review applications → Approve/Reject
+   ```
+
+3. **Demo Mode**:
+   ```
+   /admin/demo → Auto-login → Explore all features
+   ```
 
 ### Test Data
 
-Use these for testing:
-- **Email:** any valid email format
-- **EIN:** `12-3456789`
-- **Bank:** Any of the 4 provided options
-- **Invoices:** Upload any PDF/image under 10MB
+- **EIN Format**: `12-3456789`
+- **Phone Format**: `(555) 123-4567`
+- **Email**: Any valid email format
+- **Invoice Upload**: PDF, PNG, JPG (max 10MB)
 
-## Deployment
+## 🔐 Security Considerations
 
-### Build
+### Production Requirements
 
-```bash
-npm run build
+1. **Authentication**:
+   - Implement JWT or session-based auth
+   - Add rate limiting for magic links
+   - Implement 2FA for admin users
+   - Add CAPTCHA for public forms
+
+2. **Data Protection**:
+   - Enable HTTPS only
+   - Implement CSRF protection
+   - Add Content Security Policy headers
+   - Sanitize all user inputs
+   - Encrypt sensitive data at rest
+
+3. **File Upload**:
+   - Validate file types server-side
+   - Scan for malware
+   - Store files in secure cloud storage
+   - Implement access controls
+
+4. **API Security**:
+   - Add API rate limiting
+   - Implement request validation
+   - Add API authentication
+   - Log all API access
+
+## 🎨 Customization
+
+### Theme Colors
+
+Edit `src/app/globals.css`:
+
+```css
+:root {
+  --primary: 222.2 47.4% 11.2%;    /* Main brand color */
+  --secondary: 210 40% 96.1%;       /* Secondary color */
+  --accent: 210 40% 96.1%;          /* Accent color */
+  --destructive: 0 84.2% 60.2%;     /* Error color */
+}
 ```
 
-### Deploy to Vercel
+### Adding New Components
 
-```bash
-vercel
+1. Install shadcn/ui component:
+   ```bash
+   npx shadcn-ui@latest add [component-name]
+   ```
+
+2. Components are added to `src/components/ui/`
+
+### Adding New Onboarding Steps
+
+1. Create component in `src/components/onboarding/NewStep.tsx`
+2. Add to steps array in `OnboardingLayout.tsx`
+3. Import in `src/app/onboarding/page.tsx`
+4. Update step count in layout
+
+## 📚 Development Guidelines
+
+### Code Style
+
+```typescript
+// Use functional components with TypeScript
+interface Props {
+  title: string;
+  onSubmit: (data: FormData) => void;
+}
+
+export default function Component({ title, onSubmit }: Props) {
+  // Implementation
+}
 ```
 
-Or connect your GitHub repo to Vercel for automatic deployments.
+### State Management
 
-### Environment Setup
+```typescript
+// Use contexts for global state
+import { useUser } from '@/contexts/UserContext';
+import { useAdminAuth } from '@/contexts/AdminAuthContext';
 
-1. Add environment variables in Vercel dashboard
-2. Configure domains
-3. Set up email service
-4. Configure Plaid (for bank connections)
+// Use localStorage safely
+import { safeLocalStorage } from '@/utils/localStorage';
+```
 
-## Mobile-First Design
+### Error Handling
 
-### Mobile View Features
-- **Adaptive layout** - Sidebar hidden, content full-width
-- **Step indicator** - Mobile header shows current progress
-- **Optimized spacing** - Reduced padding for small screens
-- **Touch-friendly** - 44px minimum touch targets
-- **Responsive typography** - Font sizes scale down appropriately
-- **Vertical layouts** - Forms stack vertically on mobile
+```typescript
+try {
+  const result = await api.submitApplication(data);
+  toast.success('Application submitted');
+} catch (error) {
+  console.error('Submission failed:', error);
+  toast.error('Failed to submit application');
+}
+```
 
-### Breakpoints
-- **xs** (0px+) - Mobile phones
-- **sm** (600px+) - Tablets
-- **md** (900px+) - Desktop (sidebar appears)
-- **lg** (1200px+) - Large desktop
+## 🐛 Known Limitations
 
-### Testing Mobile
-- Use Chrome DevTools device emulation
-- Test on actual devices (iOS/Android)
-- Common sizes: iPhone 14 (390px), iPad (768px), Desktop (1440px)
+### Demo/Mock Features
+- Email sending is simulated (shows toast instead)
+- Bank connections use mock data (Plaid integration ready)
+- WebSocket connections are simulated
+- Document scanning is simulated
+- All data is stored in localStorage (not persistent)
 
-## Browser Support
+### Production TODO
+- [ ] Implement backend API
+- [ ] Set up database (PostgreSQL recommended)
+- [ ] Configure email service (SendGrid/AWS SES)
+- [ ] Implement Plaid for real bank connections
+- [ ] Add document OCR service
+- [ ] Set up file storage (S3/CloudStorage)
+- [ ] Implement WebSocket server
+- [ ] Add monitoring (Sentry/DataDog)
+- [ ] Set up CI/CD pipeline
+- [ ] Add automated testing
 
-- Chrome/Edge (latest)
-- Firefox (latest)
-- Safari (latest)
-- Mobile browsers (iOS Safari, Chrome Mobile)
-- Responsive from 320px to 4K displays
-
-## Performance
-
-- All routes are statically pre-rendered
-- Images optimized with Next.js Image component (where applicable)
-- Code splitting by route
-- Material UI CSS-in-JS with emotion cache for SSR
-- Lazy loading for optimal mobile performance
-- Minimal bundle size with tree shaking
-
-## Accessibility
-
-- ARIA labels on interactive elements
-- Keyboard navigation support
-- Focus management
-- Semantic HTML
-- Color contrast meets WCAG AA standards
-
-## Contributing
-
-When adding new features:
-
-1. **Follow existing component patterns** - See current components for reference
-2. **Add TypeScript types** - Import shared types from UserContext when applicable
-3. **Use Material UI components** - Maintain consistency
-4. **Follow design system** - Use defined colors/typography
-5. **Add responsive breakpoints** - Mobile-first approach
-6. **Use UserContext** - For state management instead of local state
-7. **Update documentation** - Add to relevant .md files
-8. **Test on mobile** - Use DevTools and real devices
-9. **Ensure no errors:**
-   - `npm run lint` - No linting errors
-   - `npm run build` - Successful build
-   - Check browser console - No hydration/runtime errors
-
-### Code Quality Standards
-
-✅ **Required before PR:**
-- Zero TypeScript errors
-- Zero linter errors  
-- Zero console errors
-- Successful build
-- Mobile responsive
-- Accessible (ARIA labels, keyboard nav)
-- SSR-compatible (no hydration errors)
-
-## 📚 Project Documentation
-
-### Internal Docs (in this repo)
-- **[CONTEXT_FIELDS_GUIDE.md](./CONTEXT_FIELDS_GUIDE.md)** - Complete UserContext API reference with examples
-- **[CONTEXT_UPGRADE_SUMMARY.md](./CONTEXT_UPGRADE_SUMMARY.md)** - v1.0 → v2.0 upgrade details and migration guide
-- **[HYDRATION_FIX.md](./HYDRATION_FIX.md)** - SSR hydration fix documentation
-
-### External Resources
-- [Next.js Documentation](https://nextjs.org/docs)
-- [React Documentation](https://react.dev)
-- [Material UI Documentation](https://mui.com/material-ui/)
-- [TypeScript Documentation](https://www.typescriptlang.org/docs/)
-- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
-
-## Support
+## 📞 Support
 
 For questions or issues:
-- Email: help@incoxchange.com
-- Internal: Check project wiki/documentation
+- Review the [Architecture Documentation](./ARCHITECTURE.md)
+- Check the [Developer Guide](./DEVELOPER_GUIDE.md)
+- Review the [API Documentation](./API_DOCUMENTATION.md)
 
-## License
+## 📄 License
 
-Private - IXC Finance Application
-
----
-
-## 🎉 Version History
-
-### v2.0.0 (November 23, 2025) - Production Ready
-- ✅ Enhanced UserContext with 20+ state fields
-- ✅ Safe localStorage utility
-- ✅ Signature persistence and legal compliance
-- ✅ Fixed SSR hydration errors
-- ✅ Timeline and progress tracking
-- ✅ Credit terms management
-- ✅ Complete documentation suite
-- ✅ Zero errors, fully typed, optimized
-
-### v1.0.0 (November 13, 2025) - MVP
-- Initial onboarding flow
-- Basic state management
-- 7-step onboarding process
-- Mobile-responsive design
+Private - IncoXchange © 2025
 
 ---
 
-**Last Updated:** November 23, 2025  
-**Version:** 2.0.0 (Production Ready)  
-**Status:** ✅ Ready for Backend Integration
+**Version**: 3.0.0  
+**Last Updated**: December 2025  
+**Status**: Production Ready (Frontend Complete)

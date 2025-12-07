@@ -1,23 +1,18 @@
 'use client';
 
 import React from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
 import {
-  Box,
-  Typography,
-  Button,
-  Card,
-  CardContent,
-  Chip,
-  Divider,
-} from '@mui/material';
-import {
-  Business as BusinessIcon,
-  People as PeopleIcon,
-  AccountBalance as AccountBalanceIcon,
-  Description as DescriptionIcon,
-  CheckCircle as CheckCircleIcon,
-  Edit as EditIcon,
-} from '@mui/icons-material';
+  Building2,
+  Users,
+  Landmark,
+  FileText,
+  CheckCircle,
+  Pencil,
+} from 'lucide-react';
 
 interface ReviewStepProps {
   onNext: () => void;
@@ -90,88 +85,88 @@ export default function ReviewStep({
   const sections = [
     {
       title: 'Business Profile',
-      icon: <BusinessIcon />,
+      icon: Building2,
       step: 1,
       completed: !!(data?.businessProfile.businessName && data?.businessProfile.ein),
       content: (
-        <Box>
-          <Typography sx={{ fontSize: '0.875rem', color: '#535862', mb: 1 }}>
-            <strong style={{ color: '#181D27' }}>{reviewData.business.name}</strong>
-          </Typography>
-          <Typography sx={{ fontSize: '0.875rem', color: '#535862' }}>
+        <div>
+          <p className="text-sm text-[#535862] mb-2">
+            <strong className="text-[#181D27]">{reviewData.business.name}</strong>
+          </p>
+          <p className="text-sm text-[#535862]">
             {reviewData.business.type} • {reviewData.business.industry}
-          </Typography>
-          <Typography sx={{ fontSize: '0.875rem', color: '#535862' }}>
+          </p>
+          <p className="text-sm text-[#535862]">
             EIN: {reviewData.business.ein}
-          </Typography>
-          <Typography sx={{ fontSize: '0.875rem', color: '#535862' }}>
+          </p>
+          <p className="text-sm text-[#535862]">
             {reviewData.business.address}
-          </Typography>
-        </Box>
+          </p>
+        </div>
       ),
     },
     {
       title: 'Customers',
-      icon: <PeopleIcon />,
+      icon: Users,
       step: 2,
       completed: reviewData.customers.length > 0,
       content: (
-        <Box>
-          <Typography sx={{ fontSize: '0.875rem', color: '#535862', mb: 1 }}>
+        <div>
+          <p className="text-sm text-[#535862] mb-2">
             {reviewData.customers.length} customer{reviewData.customers.length !== 1 ? 's' : ''} added
-          </Typography>
+          </p>
           {reviewData.customers.slice(0, 2).map((customer, index) => (
-            <Typography key={index} sx={{ fontSize: '0.875rem', color: '#535862' }}>
+            <p key={index} className="text-sm text-[#535862]">
               • {customer.name} ({customer.contact})
-            </Typography>
+            </p>
           ))}
           {reviewData.customers.length > 2 && (
-            <Typography sx={{ fontSize: '0.875rem', color: '#717680', fontStyle: 'italic' }}>
+            <p className="text-sm text-[#717680] italic">
               +{reviewData.customers.length - 2} more
-            </Typography>
+            </p>
           )}
-        </Box>
+        </div>
       ),
     },
     {
       title: 'Bank Account',
-      icon: <AccountBalanceIcon />,
+      icon: Landmark,
       step: 3,
       completed: reviewData.bank.connected,
       content: (
-        <Box>
-          <Typography sx={{ fontSize: '0.875rem', color: '#535862' }}>
-            <strong style={{ color: '#181D27' }}>{reviewData.bank.name}</strong> account connected
-          </Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mt: 1 }}>
-            <CheckCircleIcon sx={{ fontSize: 16, color: '#10b981' }} />
-            <Typography sx={{ fontSize: '0.75rem', color: '#10b981', fontWeight: 500 }}>
+        <div>
+          <p className="text-sm text-[#535862]">
+            <strong className="text-[#181D27]">{reviewData.bank.name}</strong> account connected
+          </p>
+          <div className="flex items-center gap-2 mt-2">
+            <CheckCircle className="w-4 h-4 text-emerald-500" />
+            <span className="text-xs text-emerald-500 font-medium">
               Verified and active
-            </Typography>
-          </Box>
-        </Box>
+            </span>
+          </div>
+        </div>
       ),
     },
     {
       title: 'Invoices',
-      icon: <DescriptionIcon />,
+      icon: FileText,
       step: 4,
       completed: reviewData.invoices.count > 0,
       content: (
-        <Box>
-          <Typography sx={{ fontSize: '0.875rem', color: '#535862', mb: 0.5 }}>
+        <div>
+          <p className="text-sm text-[#535862] mb-1">
             {reviewData.invoices.count} invoice{reviewData.invoices.count !== 1 ? 's' : ''} uploaded
-          </Typography>
-          <Typography sx={{ fontSize: '0.875rem', color: '#535862' }}>
-            Total amount: <strong style={{ color: '#181D27' }}>{reviewData.invoices.totalAmount}</strong>
-          </Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mt: 1 }}>
-            <CheckCircleIcon sx={{ fontSize: 16, color: '#10b981' }} />
-            <Typography sx={{ fontSize: '0.75rem', color: '#10b981', fontWeight: 500 }}>
+          </p>
+          <p className="text-sm text-[#535862]">
+            Total amount: <strong className="text-[#181D27]">{reviewData.invoices.totalAmount}</strong>
+          </p>
+          <div className="flex items-center gap-2 mt-2">
+            <CheckCircle className="w-4 h-4 text-emerald-500" />
+            <span className="text-xs text-emerald-500 font-medium">
               All invoices verified
-            </Typography>
-          </Box>
-        </Box>
+            </span>
+          </div>
+        </div>
       ),
     },
   ];
@@ -179,220 +174,99 @@ export default function ReviewStep({
   const allCompleted = sections.every(s => s.completed);
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        minHeight: '100%',
-        px: { xs: 2, sm: 4 },
-        py: { xs: 4, sm: 6 },
-        maxWidth: 700,
-        mx: 'auto',
-      }}
-    >
+    <div className="flex flex-col items-center min-h-full px-4 sm:px-8 py-8 sm:py-12 max-w-[700px] mx-auto">
       {/* Title */}
-      <Typography
-        sx={{
-          fontSize: { xs: '1.5rem', sm: '1.875rem' },
-          fontWeight: 600,
-          color: '#181D27',
-          mb: 2,
-          textAlign: 'center',
-        }}
-      >
+      <h1 className="text-2xl sm:text-3xl font-semibold text-[#181D27] mb-4 text-center">
         Review your information
-      </Typography>
+      </h1>
 
       {/* Description */}
-      <Typography
-        sx={{
-          fontSize: { xs: '0.875rem', sm: '1rem' },
-          fontWeight: 400,
-          color: '#535862',
-          mb: 6,
-          textAlign: 'center',
-          maxWidth: 600,
-        }}
-      >
+      <p className="text-sm sm:text-base font-normal text-[#535862] mb-12 text-center max-w-[600px]">
         Please review your details before proceeding to sign the factoring agreement.
-      </Typography>
+      </p>
 
       {/* Review Sections */}
-      <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 3 }}>
-        {sections.map((section, index) => (
-          <Card
-            key={index}
-            elevation={0}
-            sx={{
-              border: '1px solid #E9EAEB',
-              borderRadius: 2,
-            }}
-          >
-            <CardContent sx={{ p: 3 }}>
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'flex-start',
-                  mb: 2,
-                }}
-              >
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                  <Box
-                    sx={{
-                      width: 40,
-                      height: 40,
-                      borderRadius: '8px',
-                      backgroundColor: section.completed ? '#eff6ff' : '#F5F5F5',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: section.completed ? '#2164ef' : '#717680',
-                    }}
-                  >
-                    {section.icon}
-                  </Box>
-                  <Box>
-                    <Typography
-                      sx={{
-                        fontSize: '1rem',
-                        fontWeight: 600,
-                        color: '#181D27',
-                      }}
+      <div className="w-full flex flex-col gap-6">
+        {sections.map((section, index) => {
+          const Icon = section.icon;
+          return (
+            <Card key={index} className="border border-[#E9EAEB]">
+              <CardContent className="p-6">
+                <div className="flex justify-between items-start mb-4">
+                  <div className="flex items-center gap-3">
+                    <div
+                      className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                        section.completed ? 'bg-[#eff6ff] text-[#2164ef]' : 'bg-[#F5F5F5] text-[#717680]'
+                      }`}
                     >
-                      {section.title}
-                    </Typography>
-                    {section.completed && (
-                      <Chip
-                        label="Completed"
-                        size="small"
-                        sx={{
-                          height: 20,
-                          fontSize: '0.625rem',
-                          fontWeight: 500,
-                          backgroundColor: '#d1fae5',
-                          color: '#065f46',
-                          mt: 0.5,
-                          '& .MuiChip-label': {
-                            px: 1,
-                          },
-                        }}
-                      />
-                    )}
-                  </Box>
-                </Box>
+                      <Icon className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-base font-semibold text-[#181D27]">
+                        {section.title}
+                      </h3>
+                      {section.completed && (
+                        <Badge className="h-5 text-[0.625rem] font-medium bg-[#d1fae5] text-[#065f46] hover:bg-[#d1fae5] mt-1">
+                          Completed
+                        </Badge>
+                      )}
+                    </div>
+                  </div>
 
-                {onEdit && (
-                  <Button
-                    size="small"
-                    startIcon={<EditIcon sx={{ fontSize: 16 }} />}
-                    onClick={() => onEdit(section.step)}
-                    sx={{
-                      fontSize: '0.75rem',
-                      fontWeight: 500,
-                      color: '#2164ef',
-                      textTransform: 'none',
-                      minWidth: 'auto',
-                      '&:hover': {
-                        backgroundColor: '#eff6ff',
-                      },
-                    }}
-                  >
-                    Edit
-                  </Button>
-                )}
-              </Box>
+                  {onEdit && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onEdit(section.step)}
+                      className="text-xs font-medium text-[#2164ef] hover:bg-[#eff6ff] h-auto py-1 px-2"
+                    >
+                      <Pencil className="w-3 h-3 mr-1" />
+                      Edit
+                    </Button>
+                  )}
+                </div>
 
-              <Divider sx={{ mb: 2 }} />
+                <Separator className="mb-4" />
 
-              {section.content}
-            </CardContent>
-          </Card>
-        ))}
-      </Box>
+                {section.content}
+              </CardContent>
+            </Card>
+          );
+        })}
+      </div>
 
       {/* Completion Status */}
       {allCompleted && (
-        <Box
-          sx={{
-            width: '100%',
-            mt: 4,
-            p: 3,
-            backgroundColor: '#eff6ff',
-            borderRadius: 2,
-            border: '1px solid #bedcff',
-            textAlign: 'center',
-          }}
-        >
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1, mb: 1 }}>
-            <CheckCircleIcon sx={{ color: '#2164ef', fontSize: 20 }} />
-            <Typography
-              sx={{
-                fontSize: '0.875rem',
-                fontWeight: 600,
-                color: '#2164ef',
-              }}
-            >
+        <div className="w-full mt-8 p-6 bg-[#eff6ff] rounded-lg border border-[#bedcff] text-center">
+          <div className="flex items-center justify-center gap-2 mb-2">
+            <CheckCircle className="w-5 h-5 text-[#2164ef]" />
+            <span className="text-sm font-semibold text-[#2164ef]">
               All steps completed
-            </Typography>
-          </Box>
-          <Typography
-            sx={{
-              fontSize: '0.75rem',
-              fontWeight: 400,
-              color: '#535862',
-            }}
-          >
+            </span>
+          </div>
+          <p className="text-xs font-normal text-[#535862]">
             You&apos;re ready to sign the factoring agreement
-          </Typography>
-        </Box>
+          </p>
+        </div>
       )}
 
       {/* Action Buttons */}
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 2,
-          mt: 6,
-          width: '100%',
-          alignItems: 'center',
-        }}
-      >
+      <div className="flex flex-col gap-4 mt-12 w-full items-center">
         <Button
-          variant="contained"
-          size="medium"
           onClick={onNext}
           aria-label="Proceed to sign agreement"
-          sx={{
-            px: 4,
-            py: 1,
-            fontSize: '0.875rem',
-            fontWeight: 500,
-            borderRadius: 2,
-            minWidth: 150,
-          }}
+          className="px-8 py-2 text-sm font-medium rounded-lg min-w-[150px]"
         >
           Continue to Agreement
         </Button>
         <Button
-          variant="text"
-          size="small"
+          variant="ghost"
           onClick={onSkip}
-          sx={{
-            fontSize: '0.875rem',
-            color: '#535862',
-            '&:hover': {
-              backgroundColor: 'transparent',
-              textDecoration: 'underline',
-            },
-          }}
+          className="text-sm text-[#535862] hover:bg-transparent hover:underline"
         >
           Save and finish later
         </Button>
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
 }
-

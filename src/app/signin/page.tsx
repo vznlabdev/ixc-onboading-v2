@@ -2,245 +2,142 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import {
-  Box,
-  Typography,
-  TextField,
-  Button,
-  Link,
-} from '@mui/material';
+import Link from 'next/link';
+import Image from 'next/image';
+import { useUser } from '@/contexts/UserContext';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Loader2 } from 'lucide-react';
 
 export default function SignInPage() {
   const router = useRouter();
+  const { signIn } = useUser();
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const validateEmail = (email: string) => {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
   };
 
-  const handleSendMagicLink = () => {
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
     setError('');
-    
+
     if (!email.trim()) {
       setError('Email is required');
       return;
     }
-    
+
     if (!validateEmail(email)) {
       setError('Please enter a valid email address');
       return;
     }
 
     setIsLoading(true);
-    
-    // Simulate sending magic link
-    setTimeout(() => {
-      setIsLoading(false);
-      router.push(`/signup/verify?email=${encodeURIComponent(email)}`);
-    }, 1000);
-  };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      handleSendMagicLink();
-    }
+    // Simulate API call
+    setTimeout(() => {
+      signIn(email);
+      router.push(`/signup/verify?email=${encodeURIComponent(email)}`);
+    }, 800);
   };
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        minHeight: '100vh',
-        position: 'relative',
-      }}
-    >
+    <div className="flex min-h-screen relative">
       {/* Logo - Top Left Corner */}
-      <Box
-        sx={{
-          position: 'absolute',
-          top: 24,
-          left: { xs: 24, sm: 32, md: 48 },
-          display: 'flex',
-          alignItems: 'center',
-          gap: 1.5,
-          zIndex: 10,
-        }}
-      >
-        <Box
-          component="img"
+      <div className="absolute top-6 left-6 sm:left-8 md:left-12 z-10 flex items-center gap-3">
+        <Image
           src="/incoxchange-logomark.svg"
           alt="IncoXchange Logo"
-          sx={{
-            width: 32,
-            height: 32,
-          }}
+          width={32}
+          height={32}
         />
-        <Typography
-          sx={{
-            fontSize: '1.125rem',
-            fontWeight: 600,
-            color: '#181D27',
-            lineHeight: 1.56,
-          }}
-        >
+        <span className="text-lg font-semibold text-foreground">
           incoXchange
-        </Typography>
-      </Box>
+        </span>
+      </div>
 
       {/* Left Side - Form */}
-      <Box
-        sx={{
-          flex: 1,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          px: { xs: 3, sm: 8 },
-          py: { xs: 4, sm: 6 },
-          maxWidth: { xs: '100%', md: '50%' },
-          minHeight: { xs: '100vh', md: 'auto' },
-        }}
-      >
-        {/* Content */}
-        <Box sx={{ width: '100%', maxWidth: 500 }}>
+      <div className="flex flex-1 flex-col items-center justify-center px-6 sm:px-16 py-8 max-w-full md:max-w-[50%] min-h-screen">
+        <div className="w-full max-w-[500px]">
           {/* Title */}
-          <Typography
-            sx={{
-              fontSize: '1.875rem',
-              fontWeight: 600,
-              color: '#181D27',
-              mb: 2,
-            }}
-          >
-            Sign in to your account
-          </Typography>
+          <h1 className="text-3xl font-semibold text-foreground mb-4">
+            Welcome back
+          </h1>
 
           {/* Description */}
-          <Typography
-            sx={{
-              fontSize: '1rem',
-              fontWeight: 400,
-              color: '#535862',
-              mb: 4,
-              lineHeight: 1.5,
-            }}
-          >
-            Enter your business email to receive a secure magic link
-          </Typography>
+          <p className="text-base text-muted-foreground mb-6 leading-relaxed">
+            Sign in to your IncoXchange account to continue managing your business finances
+          </p>
 
           {/* Sign Up Link */}
-          <Typography
-            sx={{
-              fontSize: '0.875rem',
-              color: '#535862',
-              mb: 4,
-            }}
-          >
-            Don&apos;t have an account?{' '}
+          <p className="text-sm text-muted-foreground mb-6">
+            Don't have an account?{' '}
             <Link
               href="/signup"
-              sx={{
-                color: '#2164ef',
-                fontWeight: 500,
-                textDecoration: 'none',
-                '&:hover': {
-                  textDecoration: 'underline',
-                },
-              }}
+              className="text-primary font-medium hover:underline"
             >
               Sign up
             </Link>
-          </Typography>
+          </p>
 
-          {/* Email Input */}
-          <Box sx={{ mb: 3 }}>
-            <Typography
-              sx={{
-                fontSize: '0.875rem',
-                fontWeight: 500,
-                color: '#181D27',
-                mb: 1,
-              }}
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="email" className="text-sm font-medium">
+                Email
+              </Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  setError('');
+                }}
+                className="h-11"
+                disabled={isLoading}
+              />
+              {error && (
+                <p className="text-sm text-destructive">{error}</p>
+              )}
+            </div>
+
+            <Button
+              type="submit"
+              className="w-full h-11 text-sm font-medium"
+              disabled={isLoading}
             >
-              Email
-            </Typography>
-            <TextField
-              fullWidth
-              placeholder="Enter your email"
-              value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-                setError('');
-              }}
-              onKeyPress={handleKeyPress}
-              error={!!error}
-              helperText={error}
-              variant="outlined"
-              type="email"
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: 2,
-                },
-              }}
-            />
-          </Box>
-
-          {/* Send Magic Link Button */}
-          <Button
-            variant="contained"
-            size="large"
-            onClick={handleSendMagicLink}
-            disabled={isLoading}
-            fullWidth
-            sx={{
-              py: 1.5,
-              fontSize: '0.875rem',
-              fontWeight: 500,
-              borderRadius: 2,
-              textTransform: 'none',
-            }}
-          >
-            {isLoading ? 'Sending...' : 'Send me a magic link'}
-          </Button>
-        </Box>
-      </Box>
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Signing in...
+                </>
+              ) : (
+                'Send me a magic link'
+              )}
+            </Button>
+          </form>
+        </div>
+      </div>
 
       {/* Footer */}
-      <Box
-        sx={{
-          position: 'absolute',
-          bottom: 24,
-          left: { xs: 24, sm: 32, md: 48 },
-          right: { xs: 24, sm: 32 },
-          maxWidth: { md: 'calc(50% - 96px)' },
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          gap: 2,
-        }}
-      >
-        <Typography sx={{ fontSize: '0.875rem', color: '#717680' }}>
-          © IncoXchange 2025
-        </Typography>
-        <Typography sx={{ fontSize: '0.875rem', color: '#717680', whiteSpace: 'nowrap' }}>
+      <div className="absolute bottom-6 left-6 sm:left-8 md:left-12 right-6 sm:right-8 md:max-w-[calc(50%-96px)] flex justify-between items-center gap-4">
+        <p className="text-sm text-muted-foreground">© IncoXchange 2025</p>
+        <p className="text-sm text-muted-foreground whitespace-nowrap">
           help@incoxchange.com
-        </Typography>
-      </Box>
+        </p>
+      </div>
 
-      {/* Right Side - Image */}
-      <Box
-        sx={{
-          display: { xs: 'none', md: 'block' },
-          flex: 1,
-          backgroundImage: 'url(/images/female-fruits.jpg)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundColor: '#E9EAEB',
-        }}
+      {/* Right Side - Hero Image */}
+      <div
+        className="hidden md:block flex-1 bg-cover bg-center bg-muted"
+        style={{ backgroundImage: 'url(/images/female-fruits.jpg)' }}
       />
-    </Box>
+    </div>
   );
 }
-

@@ -1,22 +1,24 @@
 'use client';
 
 import React, { useRef, useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
 import {
-  Box,
-  Paper,
-  IconButton,
-  Divider,
   Tooltip,
-} from '@mui/material';
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import {
-  FormatBold,
-  FormatItalic,
-  FormatUnderlined,
-  FormatListBulleted,
-  FormatListNumbered,
+  Bold,
+  Italic,
+  Underline,
+  List,
+  ListOrdered,
   Undo,
   Redo,
-} from '@mui/icons-material';
+} from 'lucide-react';
 
 interface RichTextEditorProps {
   value: string;
@@ -72,134 +74,148 @@ export default function RichTextEditor({
   }, [value]);
 
   return (
-    <Paper
-      elevation={0}
-      sx={{
-        border: isFocused ? '2px solid #2164ef' : '1px solid #E9EAEB',
-        borderRadius: 2,
-        overflow: 'hidden',
-      }}
-    >
+    <Card className={`rounded-lg overflow-hidden ${
+      isFocused ? 'ring-2 ring-[#2164ef] border-transparent' : 'border border-[#E9EAEB]'
+    }`}>
       {/* Toolbar */}
-      <Box
-        sx={{
-          display: 'flex',
-          gap: 0.5,
-          p: 1,
-          backgroundColor: '#FAFAFA',
-          borderBottom: '1px solid #E9EAEB',
-          flexWrap: 'wrap',
-        }}
-      >
-        <Tooltip title="Bold">
-          <IconButton
-            size="small"
-            onClick={() => execCommand('bold')}
-            sx={{ '&:hover': { backgroundColor: '#E9EAEB' } }}
-          >
-            <FormatBold sx={{ fontSize: 18 }} />
-          </IconButton>
-        </Tooltip>
-        
-        <Tooltip title="Italic">
-          <IconButton
-            size="small"
-            onClick={() => execCommand('italic')}
-            sx={{ '&:hover': { backgroundColor: '#E9EAEB' } }}
-          >
-            <FormatItalic sx={{ fontSize: 18 }} />
-          </IconButton>
-        </Tooltip>
-        
-        <Tooltip title="Underline">
-          <IconButton
-            size="small"
-            onClick={() => execCommand('underline')}
-            sx={{ '&:hover': { backgroundColor: '#E9EAEB' } }}
-          >
-            <FormatUnderlined sx={{ fontSize: 18 }} />
-          </IconButton>
-        </Tooltip>
+      <div className="flex gap-1 p-2 bg-[#FAFAFA] border-b border-[#E9EAEB] flex-wrap">
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => execCommand('bold')}
+                className="h-8 w-8 p-0 hover:bg-[#E9EAEB]"
+              >
+                <Bold className="w-4 h-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Bold</TooltipContent>
+          </Tooltip>
 
-        <Divider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => execCommand('italic')}
+                className="h-8 w-8 p-0 hover:bg-[#E9EAEB]"
+              >
+                <Italic className="w-4 h-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Italic</TooltipContent>
+          </Tooltip>
 
-        <Tooltip title="Bullet List">
-          <IconButton
-            size="small"
-            onClick={() => execCommand('insertUnorderedList')}
-            sx={{ '&:hover': { backgroundColor: '#E9EAEB' } }}
-          >
-            <FormatListBulleted sx={{ fontSize: 18 }} />
-          </IconButton>
-        </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => execCommand('underline')}
+                className="h-8 w-8 p-0 hover:bg-[#E9EAEB]"
+              >
+                <Underline className="w-4 h-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Underline</TooltipContent>
+          </Tooltip>
 
-        <Tooltip title="Numbered List">
-          <IconButton
-            size="small"
-            onClick={() => execCommand('insertOrderedList')}
-            sx={{ '&:hover': { backgroundColor: '#E9EAEB' } }}
-          >
-            <FormatListNumbered sx={{ fontSize: 18 }} />
-          </IconButton>
-        </Tooltip>
+          <Separator orientation="vertical" className="mx-1 h-8" />
 
-        <Divider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => execCommand('insertUnorderedList')}
+                className="h-8 w-8 p-0 hover:bg-[#E9EAEB]"
+              >
+                <List className="w-4 h-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Bullet List</TooltipContent>
+          </Tooltip>
 
-        <Tooltip title="Undo">
-          <IconButton
-            size="small"
-            onClick={() => execCommand('undo')}
-            sx={{ '&:hover': { backgroundColor: '#E9EAEB' } }}
-          >
-            <Undo sx={{ fontSize: 18 }} />
-          </IconButton>
-        </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => execCommand('insertOrderedList')}
+                className="h-8 w-8 p-0 hover:bg-[#E9EAEB]"
+              >
+                <ListOrdered className="w-4 h-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Numbered List</TooltipContent>
+          </Tooltip>
 
-        <Tooltip title="Redo">
-          <IconButton
-            size="small"
-            onClick={() => execCommand('redo')}
-            sx={{ '&:hover': { backgroundColor: '#E9EAEB' } }}
-          >
-            <Redo sx={{ fontSize: 18 }} />
-          </IconButton>
-        </Tooltip>
-      </Box>
+          <Separator orientation="vertical" className="mx-1 h-8" />
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => execCommand('undo')}
+                className="h-8 w-8 p-0 hover:bg-[#E9EAEB]"
+              >
+                <Undo className="w-4 h-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Undo</TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => execCommand('redo')}
+                className="h-8 w-8 p-0 hover:bg-[#E9EAEB]"
+              >
+                <Redo className="w-4 h-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Redo</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </div>
 
       {/* Editor */}
-      <Box
+      <div
         ref={editorRef}
         contentEditable
         onInput={handleInput}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
         suppressContentEditableWarning
-        sx={{
-          p: 3,
-          minHeight,
-          maxHeight: 600,
-          overflowY: 'auto',
-          fontSize: '0.875rem',
-          lineHeight: 1.8,
-          color: '#181D27',
-          outline: 'none',
-          '&:empty:before': {
-            content: `"${placeholder}"`,
-            color: '#A4A7AE',
-          },
-          '& p': {
-            margin: '0 0 1em 0',
-          },
-          '& strong': {
-            fontWeight: 600,
-          },
-          '& ul, & ol': {
-            paddingLeft: '1.5em',
-            marginBottom: '1em',
-          },
+        className="p-6 overflow-y-auto text-sm leading-relaxed text-[#181D27] outline-none"
+        style={{
+          minHeight: `${minHeight}px`,
+          maxHeight: '600px',
         }}
+        data-placeholder={placeholder}
       />
-    </Paper>
+      <style jsx>{`
+        [contenteditable]:empty:before {
+          content: attr(data-placeholder);
+          color: #A4A7AE;
+        }
+        [contenteditable] p {
+          margin: 0 0 1em 0;
+        }
+        [contenteditable] strong {
+          font-weight: 600;
+        }
+        [contenteditable] ul,
+        [contenteditable] ol {
+          padding-left: 1.5em;
+          margin-bottom: 1em;
+        }
+      `}</style>
+    </Card>
   );
 }
-

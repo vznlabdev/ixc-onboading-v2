@@ -1,24 +1,16 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
+import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
 import {
-  Box,
-  Typography,
-  Button,
-  List,
-  ListItem,
-  ListItemText,
-  IconButton,
-  LinearProgress,
-} from '@mui/material';
-import {
-  CloudUpload as CloudUploadIcon,
-  Delete as DeleteIcon,
-  Description as DescriptionIcon,
-  CheckCircle as CheckCircleIcon,
-  Scanner as ScannerIcon,
-  Receipt as ReceiptIcon,
-} from '@mui/icons-material';
+  CloudUpload,
+  Trash2,
+  FileText,
+  CheckCircle,
+  ScanLine,
+  Receipt,
+} from 'lucide-react';
 
 interface InvoicesStepProps {
   onNext: () => void;
@@ -222,295 +214,126 @@ export default function InvoicesStep({
     const allScanned = uploadedFiles.every(f => f.scanStatus === 'verified');
     
     return (
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          minHeight: '100%',
-          px: { xs: 2, sm: 4 },
-          py: { xs: 4, sm: 6 },
-          maxWidth: 700,
-          mx: 'auto',
-        }}
-      >
+      <div className="flex flex-col items-center min-h-full px-4 sm:px-8 py-8 sm:py-12 max-w-[700px] mx-auto">
         {/* Title */}
-        <Typography
-          sx={{
-            fontSize: { xs: '1.5rem', sm: '1.875rem' },
-            fontWeight: 600,
-            color: '#181D27',
-            mb: 2,
-            textAlign: 'center',
-          }}
-        >
+        <h1 className="text-2xl sm:text-3xl font-semibold text-[#181D27] mb-4 text-center">
           {allScanned ? 'Verification complete' : 'Scanning your invoices'}
-        </Typography>
+        </h1>
 
         {/* Description */}
-        <Typography
-          sx={{
-            fontSize: { xs: '0.875rem', sm: '1rem' },
-            fontWeight: 400,
-            color: '#535862',
-            mb: 6,
-            textAlign: 'center',
-            maxWidth: 600,
-          }}
-        >
+        <p className="text-sm sm:text-base font-normal text-[#535862] mb-12 text-center max-w-[600px]">
           {allScanned 
             ? 'All invoices have been verified successfully.' 
             : 'We\'re extracting data and verifying your invoice details. This will only take a moment.'}
-        </Typography>
+        </p>
 
         {/* Scanning Icon */}
         {!allScanned && (
-          <Box
-            sx={{
-              width: 80,
-              height: 80,
-              borderRadius: '50%',
-              backgroundColor: '#eff6ff',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              mb: 6,
-              animation: 'pulse 2s ease-in-out infinite',
-              '@keyframes pulse': {
-                '0%, 100%': { transform: 'scale(1)', opacity: 1 },
-                '50%': { transform: 'scale(1.05)', opacity: 0.8 },
-              },
-            }}
-          >
-            <ScannerIcon sx={{ fontSize: 40, color: '#2164ef' }} />
-          </Box>
+          <div className="w-20 h-20 rounded-full bg-[#eff6ff] flex items-center justify-center mb-12 animate-pulse">
+            <ScanLine className="w-10 h-10 text-[#2164ef]" />
+          </div>
         )}
 
         {/* Files Being Scanned */}
-        <Box sx={{ width: '100%', maxWidth: 600 }}>
-          <List
-            sx={{
-              border: '1px solid #E9EAEB',
-              borderRadius: 2,
-              backgroundColor: 'white',
-            }}
-          >
+        <div className="w-full max-w-[600px]">
+          <div className="border border-[#E9EAEB] rounded-lg bg-white">
             {uploadedFiles.map((file, index) => (
               <React.Fragment key={index}>
-                {index > 0 && <Box sx={{ borderTop: '1px solid #E9EAEB' }} />}
-                <ListItem sx={{ py: 3 }}>
-                  <Box
-                    sx={{
-                      mr: 2,
-                      color:
-                        file.scanStatus === 'verified'
-                          ? '#10b981'
-                          : file.scanStatus === 'scanning'
-                          ? '#2164ef'
-                          : '#717680',
-                    }}
-                  >
+                {index > 0 && <div className="border-t border-[#E9EAEB]" />}
+                <div className="py-6 px-4 flex items-start gap-4">
+                  <div className={`flex-shrink-0 ${
+                    file.scanStatus === 'verified'
+                      ? 'text-emerald-500'
+                      : file.scanStatus === 'scanning'
+                      ? 'text-[#2164ef]'
+                      : 'text-[#717680]'
+                  }`}>
                     {file.scanStatus === 'verified' ? (
-                      <CheckCircleIcon />
+                      <CheckCircle className="w-6 h-6" />
                     ) : file.scanStatus === 'scanning' ? (
-                      <Box
-                        sx={{
-                          width: 24,
-                          height: 24,
-                          border: '3px solid #E9EAEB',
-                          borderTop: '3px solid #2164ef',
-                          borderRadius: '50%',
-                          animation: 'spin 1s linear infinite',
-                          '@keyframes spin': {
-                            '0%': { transform: 'rotate(0deg)' },
-                            '100%': { transform: 'rotate(360deg)' },
-                          },
-                        }}
-                      />
+                      <div className="w-6 h-6 border-3 border-[#E9EAEB] border-t-[#2164ef] rounded-full animate-spin" />
                     ) : (
-                      <ReceiptIcon />
+                      <Receipt className="w-6 h-6" />
                     )}
-                  </Box>
-                  <ListItemText
-                    primary={file.name}
-                    secondary={
-                      <Box component="span" sx={{ display: 'block' }}>
-                        <Typography
-                          component="span"
-                          sx={{
-                            fontSize: '0.75rem',
-                            color: '#717680',
-                            display: 'block',
-                          }}
-                        >
-                          {file.scanStatus === 'verified' && file.extractedData
-                            ? `${file.extractedData.invoiceNumber} • ${file.extractedData.amount} • ${file.extractedData.date}`
-                            : file.scanStatus === 'scanning'
-                            ? 'Extracting invoice data...'
-                            : 'Pending scan'}
-                        </Typography>
-                        {file.scanStatus === 'verified' && (
-                          <Typography
-                            component="span"
-                            sx={{
-                              fontSize: '0.75rem',
-                              color: '#10b981',
-                              fontWeight: 500,
-                              mt: 0.5,
-                              display: 'block',
-                            }}
-                          >
-                            ✓ Verified successfully
-                          </Typography>
-                        )}
-                      </Box>
-                    }
-                    primaryTypographyProps={{
-                      sx: {
-                        fontSize: '0.875rem',
-                        fontWeight: 500,
-                        color: '#181D27',
-                        mb: 0.5,
-                      },
-                    }}
-                  />
-                </ListItem>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-[#181D27] mb-2">
+                      {file.name}
+                    </p>
+                    <p className="text-xs text-[#717680]">
+                      {file.scanStatus === 'verified' && file.extractedData
+                        ? `${file.extractedData.invoiceNumber} • ${file.extractedData.amount} • ${file.extractedData.date}`
+                        : file.scanStatus === 'scanning'
+                        ? 'Extracting invoice data...'
+                        : 'Pending scan'}
+                    </p>
+                    {file.scanStatus === 'verified' && (
+                      <p className="text-xs text-emerald-500 font-medium mt-2">
+                        ✓ Verified successfully
+                      </p>
+                    )}
+                  </div>
+                </div>
               </React.Fragment>
             ))}
-          </List>
-        </Box>
+          </div>
+        </div>
 
         {/* Progress Info */}
         {!allScanned && (
-          <Box sx={{ mt: 4, textAlign: 'center' }}>
-            <Typography
-              sx={{
-                fontSize: '0.875rem',
-                fontWeight: 500,
-                color: '#2164ef',
-              }}
-            >
+          <div className="mt-8 text-center">
+            <p className="text-sm font-medium text-[#2164ef]">
               Processing {uploadedFiles.filter(f => f.scanStatus === 'verified').length} of {uploadedFiles.length} invoices
-            </Typography>
-          </Box>
+            </p>
+          </div>
         )}
-      </Box>
+      </div>
     );
   }
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        minHeight: '100%',
-        px: { xs: 2, sm: 4 },
-        py: { xs: 4, sm: 6 },
-        maxWidth: 700,
-        mx: 'auto',
-      }}
-    >
+    <div className="flex flex-col items-center min-h-full px-4 sm:px-8 py-8 sm:py-12 max-w-[700px] mx-auto">
       {/* Title */}
-      <Typography
-        sx={{
-          fontSize: { xs: '1.5rem', sm: '1.875rem' },
-          fontWeight: 600,
-          color: '#181D27',
-          mb: 2,
-          textAlign: 'center',
-        }}
-      >
+      <h1 className="text-2xl sm:text-3xl font-semibold text-[#181D27] mb-4 text-center">
         Upload your invoices
-      </Typography>
+      </h1>
 
       {/* Description */}
-      <Typography
-        sx={{
-          fontSize: { xs: '0.875rem', sm: '1rem' },
-          fontWeight: 400,
-          color: '#535862',
-          mb: 6,
-          textAlign: 'center',
-          maxWidth: 600,
-        }}
-      >
+      <p className="text-sm sm:text-base font-normal text-[#535862] mb-12 text-center max-w-[600px]">
         Submit your recent invoices to get started with funding and customer verification.
-      </Typography>
+      </p>
 
       {/* Upload Area */}
-      <Box
+      <div
         onDragEnter={handleDragEnter}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         onClick={handleClickUpload}
-        sx={{
-          width: '100%',
-          border: isDragging ? '2px dashed #2164ef' : '2px dashed #E9EAEB',
-          borderRadius: 2,
-          p: { xs: 4, sm: 6 },
-          textAlign: 'center',
-          cursor: 'pointer',
-          transition: 'all 0.2s ease',
-          backgroundColor: isDragging ? '#eff6ff' : '#FAFAFA',
-          '&:hover': {
-            borderColor: '#2164ef',
-            backgroundColor: '#eff6ff',
-          },
-        }}
+        className={`w-full border-2 border-dashed rounded-lg p-8 sm:p-12 text-center cursor-pointer transition-all ${
+          isDragging
+            ? 'border-[#2164ef] bg-[#eff6ff]'
+            : 'border-[#E9EAEB] bg-[#FAFAFA] hover:border-[#2164ef] hover:bg-[#eff6ff]'
+        }`}
       >
         {/* Upload Icon */}
-        <Box
-          sx={{
-            width: 48,
-            height: 48,
-            borderRadius: '8px',
-            border: '1px solid #E9EAEB',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            mx: 'auto',
-            mb: 3,
-            backgroundColor: 'white',
-          }}
-        >
-          <CloudUploadIcon sx={{ fontSize: 24, color: '#717680' }} />
-        </Box>
+        <div className="w-12 h-12 rounded-lg border border-[#E9EAEB] flex items-center justify-center mx-auto mb-6 bg-white">
+          <CloudUpload className="w-6 h-6 text-[#717680]" />
+        </div>
 
         {/* Upload Text */}
-        <Typography
-          sx={{
-            fontSize: '0.875rem',
-            fontWeight: 500,
-            color: '#181D27',
-            mb: 1,
-          }}
-        >
-          <Typography
-            component="span"
-            sx={{
-              color: '#2164ef',
-              fontWeight: 600,
-              textDecoration: 'underline',
-            }}
-          >
+        <p className="text-sm font-medium text-[#181D27] mb-2">
+          <span className="text-[#2164ef] font-semibold underline">
             Click to upload
-          </Typography>
+          </span>
           {' '}or drag and drop
-        </Typography>
+        </p>
 
         {/* File Info */}
-        <Typography
-          sx={{
-            fontSize: '0.75rem',
-            fontWeight: 400,
-            color: '#717680',
-          }}
-        >
+        <p className="text-xs font-normal text-[#717680]">
           PDF, DOCX, or image formats (max. 10mb per file)
-        </Typography>
-      </Box>
+        </p>
+      </div>
 
       {/* Hidden File Input */}
       <input
@@ -519,156 +342,77 @@ export default function InvoicesStep({
         multiple
         accept=".pdf,.docx,.doc,.png,.jpg,.jpeg"
         onChange={handleFileSelect}
-        style={{ display: 'none' }}
+        className="hidden"
       />
 
       {/* Uploaded Files List */}
       {uploadedFiles.length > 0 && (
-        <Box sx={{ width: '100%', mt: 4 }}>
-          <Typography
-            sx={{
-              fontSize: '0.875rem',
-              fontWeight: 600,
-              color: '#181D27',
-              mb: 2,
-            }}
-          >
+        <div className="w-full mt-8">
+          <h3 className="text-sm font-semibold text-[#181D27] mb-4">
             Uploaded Files ({uploadedFiles.length})
-          </Typography>
-          <List
-            sx={{
-              border: '1px solid #E9EAEB',
-              borderRadius: 2,
-              backgroundColor: 'white',
-            }}
-          >
+          </h3>
+          <div className="border border-[#E9EAEB] rounded-lg bg-white">
             {uploadedFiles.map((file, index) => (
               <React.Fragment key={index}>
-                {index > 0 && (
-                  <Box sx={{ borderTop: '1px solid #E9EAEB' }} />
-                )}
-                <ListItem
-                  secondaryAction={
-                    file.status === 'success' ? (
-                      <IconButton
-                        edge="end"
-                        onClick={() => handleRemoveFile(file.name)}
-                        sx={{
-                          color: '#717680',
-                          '&:hover': {
-                            color: '#ef4444',
-                          },
-                        }}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    ) : null
-                  }
-                  sx={{ py: 2 }}
-                >
-                  <Box
-                    sx={{
-                      mr: 2,
-                      color: file.status === 'success' ? '#10b981' : '#2164ef',
-                    }}
-                  >
+                {index > 0 && <div className="border-t border-[#E9EAEB]" />}
+                <div className="py-4 px-4 flex items-start gap-4">
+                  <div className={`flex-shrink-0 ${
+                    file.status === 'success' ? 'text-emerald-500' : 'text-[#2164ef]'
+                  }`}>
                     {file.status === 'success' ? (
-                      <CheckCircleIcon />
+                      <CheckCircle className="w-6 h-6" />
                     ) : (
-                      <DescriptionIcon />
+                      <FileText className="w-6 h-6" />
                     )}
-                  </Box>
-                  <ListItemText
-                    primary={file.name}
-                    secondary={
-                      <Box component="span" sx={{ display: 'block' }}>
-                        <Typography
-                          component="span"
-                          sx={{
-                            fontSize: '0.75rem',
-                            color: '#717680',
-                            mb: file.status === 'uploading' ? 0.5 : 0,
-                            display: 'block',
-                          }}
-                        >
-                          {formatFileSize(file.size)}
-                          {file.status === 'uploading' && ` • Uploading...`}
-                          {file.status === 'success' && ` • Upload complete`}
-                        </Typography>
-                        {file.status === 'uploading' && (
-                          <LinearProgress
-                            variant="determinate"
-                            value={file.progress}
-                            sx={{
-                              mt: 1,
-                              height: 4,
-                              borderRadius: 2,
-                              backgroundColor: '#E9EAEB',
-                            }}
-                          />
-                        )}
-                      </Box>
-                    }
-                    primaryTypographyProps={{
-                      sx: {
-                        fontSize: '0.875rem',
-                        fontWeight: 500,
-                        color: '#181D27',
-                      },
-                    }}
-                  />
-                </ListItem>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-[#181D27] mb-1">
+                      {file.name}
+                    </p>
+                    <p className="text-xs text-[#717680] mb-2">
+                      {formatFileSize(file.size)}
+                      {file.status === 'uploading' && ' • Uploading...'}
+                      {file.status === 'success' && ' • Upload complete'}
+                    </p>
+                    {file.status === 'uploading' && (
+                      <Progress value={file.progress} className="h-1" />
+                    )}
+                  </div>
+                  {file.status === 'success' && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleRemoveFile(file.name)}
+                      className="text-[#717680] hover:text-red-500 flex-shrink-0 p-2"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  )}
+                </div>
               </React.Fragment>
             ))}
-          </List>
-        </Box>
+          </div>
+        </div>
       )}
 
       {/* Action Buttons */}
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 2,
-          mt: 6,
-          width: '100%',
-          alignItems: 'center',
-        }}
-      >
+      <div className="flex flex-col gap-4 mt-12 w-full items-center">
         <Button
-          variant="contained"
-          size="medium"
           onClick={handleContinue}
           disabled={uploadedFiles.length === 0 || uploadedFiles.some(f => f.status === 'uploading')}
           aria-label="Continue to next step"
-          sx={{
-            px: 4,
-            py: 1,
-            fontSize: '0.875rem',
-            fontWeight: 500,
-            borderRadius: 2,
-            minWidth: 150,
-          }}
+          className="px-8 py-2 text-sm font-medium rounded-lg min-w-[150px]"
         >
           Continue
         </Button>
         <Button
-          variant="text"
-          size="small"
+          variant="ghost"
           onClick={onSkip}
-          sx={{
-            fontSize: '0.875rem',
-            color: '#535862',
-            '&:hover': {
-              backgroundColor: 'transparent',
-              textDecoration: 'underline',
-            },
-          }}
+          className="text-sm text-[#535862] hover:bg-transparent hover:underline"
         >
           Skip for now
         </Button>
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
 }
-

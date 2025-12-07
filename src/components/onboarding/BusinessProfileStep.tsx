@@ -1,17 +1,16 @@
 'use client';
 
 import React, { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
-  Box,
-  Typography,
-  TextField,
   Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  Button,
-  FormHelperText,
-} from '@mui/material';
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 interface BusinessData {
   businessName: string;
@@ -63,6 +62,17 @@ export default function BusinessProfileStep({
     }
   };
 
+  const handleSelectChange = (field: string) => (value: string) => {
+    setFormData({
+      ...formData,
+      [field]: value,
+    });
+    // Clear error when user selects
+    if (errors[field]) {
+      setErrors({ ...errors, [field]: '' });
+    }
+  };
+
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
     
@@ -108,300 +118,215 @@ export default function BusinessProfileStep({
   };
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        minHeight: '100%',
-        px: { xs: 2, sm: 4 },
-        py: { xs: 4, sm: 6 },
-        maxWidth: 600,
-        mx: 'auto',
-      }}
-    >
+    <div className="flex flex-col items-center min-h-full px-6 py-12 max-w-[520px] mx-auto">
       {/* Title */}
-      <Typography
-        sx={{
-          fontSize: '1.875rem',
-          fontWeight: 600,
-          color: '#181D27',
-          mb: 2,
-          textAlign: 'center',
-        }}
-      >
+      <h1 className="text-3xl font-bold text-black mb-3 text-center tracking-tight">
         Tell us about your business
-      </Typography>
+      </h1>
 
       {/* Description */}
-      <Typography
-        sx={{
-          fontSize: '1rem',
-          fontWeight: 400,
-          color: '#535862',
-          mb: 2,
-          textAlign: 'center',
-          maxWidth: 500,
-        }}
-      >
+      <p className="text-base text-gray-600 mb-2 text-center max-w-[450px]">
         We&apos;ll use this information to verify your account details and tailor your dashboard experience.
-      </Typography>
+      </p>
 
       {/* Additional Info */}
-      <Typography
-        sx={{
-          fontSize: '0.875rem',
-          fontWeight: 400,
-          color: '#717680',
-          mb: 4,
-          textAlign: 'center',
-          maxWidth: 500,
-        }}
-      >
+      <p className="text-sm text-gray-500 mb-10 text-center max-w-[450px]">
         Enter your core business details below. You can update this information anytime in your profile settings.
-      </Typography>
+      </p>
 
       {/* Form */}
-      <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 3 }}>
+      <div className="w-full flex flex-col gap-5">
         {/* Business Name */}
-        <FormControl fullWidth>
-          <TextField
-            label="Business Name"
-            required
+        <div className="space-y-2">
+          <Label htmlFor="businessName" className="text-sm font-medium text-black">
+            Business Name <span className="text-red-500">*</span>
+          </Label>
+          <Input
+            id="businessName"
             placeholder="e.g. IncoXchange Ltd."
             value={formData.businessName}
             onChange={handleChange('businessName')}
-            error={!!errors.businessName}
-            helperText={errors.businessName}
-            variant="outlined"
-            sx={{
-              '& .MuiOutlinedInput-root': {
-                borderRadius: 2,
-              },
-            }}
+            className={errors.businessName ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}
           />
-        </FormControl>
+          {errors.businessName && (
+            <p className="text-xs text-red-600 mt-1">{errors.businessName}</p>
+          )}
+        </div>
 
         {/* Business Type */}
-        <FormControl fullWidth required error={!!errors.businessType}>
-          <InputLabel>Business Type</InputLabel>
+        <div className="space-y-2">
+          <Label htmlFor="businessType" className="text-sm font-medium text-black">
+            Business Type <span className="text-red-500">*</span>
+          </Label>
           <Select
             value={formData.businessType}
-            onChange={handleChange('businessType')}
-            label="Business Type"
-            sx={{
-              borderRadius: 2,
-            }}
+            onValueChange={handleSelectChange('businessType')}
           >
-            <MenuItem value="">Select business type</MenuItem>
-            <MenuItem value="corporation">Corporation</MenuItem>
-            <MenuItem value="llc">LLC</MenuItem>
-            <MenuItem value="sole_proprietor">Sole Proprietor</MenuItem>
-            <MenuItem value="partnership">Partnership</MenuItem>
+            <SelectTrigger className={errors.businessType ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}>
+              <SelectValue placeholder="Select business type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="corporation">Corporation</SelectItem>
+              <SelectItem value="llc">LLC</SelectItem>
+              <SelectItem value="sole_proprietor">Sole Proprietor</SelectItem>
+              <SelectItem value="partnership">Partnership</SelectItem>
+            </SelectContent>
           </Select>
           {errors.businessType && (
-            <FormHelperText>{errors.businessType}</FormHelperText>
+            <p className="text-xs text-red-600 mt-1">{errors.businessType}</p>
           )}
-        </FormControl>
+        </div>
 
         {/* Industry */}
-        <FormControl fullWidth required error={!!errors.industry}>
-          <InputLabel>Industry</InputLabel>
+        <div className="space-y-2">
+          <Label htmlFor="industry" className="text-sm font-medium text-black">
+            Industry <span className="text-red-500">*</span>
+          </Label>
           <Select
             value={formData.industry}
-            onChange={handleChange('industry')}
-            label="Industry"
-            sx={{
-              borderRadius: 2,
-            }}
+            onValueChange={handleSelectChange('industry')}
           >
-            <MenuItem value="">Select industry type</MenuItem>
-            <MenuItem value="construction">Construction</MenuItem>
-            <MenuItem value="property_management">Property Management</MenuItem>
-            <MenuItem value="healthcare">Healthcare</MenuItem>
-            <MenuItem value="retail">Retail</MenuItem>
-            <MenuItem value="other">Other</MenuItem>
+            <SelectTrigger className={errors.industry ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}>
+              <SelectValue placeholder="Select industry type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="construction">Construction</SelectItem>
+              <SelectItem value="property_management">Property Management</SelectItem>
+              <SelectItem value="healthcare">Healthcare</SelectItem>
+              <SelectItem value="retail">Retail</SelectItem>
+              <SelectItem value="other">Other</SelectItem>
+            </SelectContent>
           </Select>
           {errors.industry && (
-            <FormHelperText>{errors.industry}</FormHelperText>
+            <p className="text-xs text-red-600 mt-1">{errors.industry}</p>
           )}
-        </FormControl>
+        </div>
 
         {/* EIN */}
-        <FormControl fullWidth>
-          <TextField
-            label="EIN"
-            required
+        <div className="space-y-2">
+          <Label htmlFor="ein" className="text-sm font-medium text-black">
+            EIN <span className="text-red-500">*</span>
+          </Label>
+          <Input
+            id="ein"
             placeholder="12-3456789"
             value={formData.ein}
             onChange={handleChange('ein')}
-            error={!!errors.ein}
-            helperText={errors.ein || 'Employer Identification Number (e.g., 12-3456789)'}
-            variant="outlined"
-            sx={{
-              '& .MuiOutlinedInput-root': {
-                borderRadius: 2,
-              },
-            }}
+            className={errors.ein ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}
           />
-        </FormControl>
+          {errors.ein ? (
+            <p className="text-xs text-red-600 mt-1">{errors.ein}</p>
+          ) : (
+            <p className="text-xs text-gray-500 mt-1">
+              Employer Identification Number (e.g., 12-3456789)
+            </p>
+          )}
+        </div>
 
         {/* Business Address Section */}
-        <Typography
-          sx={{
-            fontSize: '0.875rem',
-            fontWeight: 600,
-            color: '#181D27',
-            mt: 1,
-          }}
-        >
-          Business Address *
-        </Typography>
+        <div className="pt-4 border-t border-gray-200">
+          <p className="text-sm font-semibold text-black mb-4">
+            Business Address <span className="text-red-500">*</span>
+          </p>
+        </div>
 
         {/* State */}
-        <FormControl fullWidth required>
-          <InputLabel>State</InputLabel>
+        <div className="space-y-2">
+          <Label htmlFor="state" className="text-sm font-medium text-black">
+            State <span className="text-red-500">*</span>
+          </Label>
           <Select
             value={formData.state}
-            onChange={handleChange('state')}
-            label="State"
-            sx={{
-              borderRadius: 2,
-            }}
+            onValueChange={handleSelectChange('state')}
           >
-            <MenuItem value="">State</MenuItem>
-            <MenuItem value="ny">New York</MenuItem>
-            <MenuItem value="ca">California</MenuItem>
-            <MenuItem value="tx">Texas</MenuItem>
-            <MenuItem value="fl">Florida</MenuItem>
+            <SelectTrigger>
+              <SelectValue placeholder="Select state" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="ny">New York</SelectItem>
+              <SelectItem value="ca">California</SelectItem>
+              <SelectItem value="tx">Texas</SelectItem>
+              <SelectItem value="fl">Florida</SelectItem>
+            </SelectContent>
           </Select>
-        </FormControl>
+        </div>
 
         {/* City */}
-        <FormControl fullWidth required>
-          <InputLabel>City</InputLabel>
+        <div className="space-y-2">
+          <Label htmlFor="city" className="text-sm font-medium text-black">
+            City <span className="text-red-500">*</span>
+          </Label>
           <Select
             value={formData.city}
-            onChange={handleChange('city')}
-            label="City"
-            sx={{
-              borderRadius: 2,
-            }}
+            onValueChange={handleSelectChange('city')}
           >
-            <MenuItem value="">City</MenuItem>
-            <MenuItem value="nyc">New York City</MenuItem>
-            <MenuItem value="la">Los Angeles</MenuItem>
-            <MenuItem value="chicago">Chicago</MenuItem>
+            <SelectTrigger>
+              <SelectValue placeholder="Select city" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="nyc">New York City</SelectItem>
+              <SelectItem value="la">Los Angeles</SelectItem>
+              <SelectItem value="chicago">Chicago</SelectItem>
+            </SelectContent>
           </Select>
-        </FormControl>
+        </div>
 
         {/* Street */}
-        <FormControl fullWidth>
-          <TextField
-            label="Street"
-            placeholder="Street"
+        <div className="space-y-2">
+          <Label htmlFor="street" className="text-sm font-medium text-black">Street</Label>
+          <Input
+            id="street"
+            placeholder="123 Main St"
             value={formData.street}
             onChange={handleChange('street')}
-            variant="outlined"
-            sx={{
-              '& .MuiOutlinedInput-root': {
-                borderRadius: 2,
-              },
-            }}
           />
-        </FormControl>
+        </div>
 
         {/* Building */}
-        <FormControl fullWidth>
-          <TextField
-            label="Building"
-            placeholder="Building"
+        <div className="space-y-2">
+          <Label htmlFor="building" className="text-sm font-medium text-black">Building</Label>
+          <Input
+            id="building"
+            placeholder="Suite 100"
             value={formData.building}
             onChange={handleChange('building')}
-            variant="outlined"
-            sx={{
-              '& .MuiOutlinedInput-root': {
-                borderRadius: 2,
-              },
-            }}
           />
-        </FormControl>
+        </div>
 
         {/* ZIP */}
-        <FormControl fullWidth>
-          <TextField
-            label="ZIP"
-            placeholder="ZIP"
+        <div className="space-y-2">
+          <Label htmlFor="zip" className="text-sm font-medium text-black">ZIP</Label>
+          <Input
+            id="zip"
+            placeholder="10001"
             value={formData.zip}
             onChange={handleChange('zip')}
-            variant="outlined"
-            sx={{
-              '& .MuiOutlinedInput-root': {
-                borderRadius: 2,
-              },
-            }}
           />
-        </FormControl>
-      </Box>
+        </div>
+      </div>
 
       {/* Action Buttons */}
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 2,
-          mt: 6,
-          width: '100%',
-          alignItems: 'center',
-        }}
-      >
+      <div className="flex flex-col gap-3 mt-10 w-full items-center">
         <Button
-          variant="contained"
-          size="medium"
           onClick={handleContinue}
           disabled={isSaving}
           aria-label="Continue to next step"
-          sx={{
-            px: 4,
-            py: 1,
-            fontSize: '0.875rem',
-            fontWeight: 500,
-            borderRadius: 2,
-            minWidth: 150,
-          }}
+          size="lg"
         >
           {isSaving ? 'Saving...' : 'Continue'}
         </Button>
         <Button
-          variant="text"
-          size="small"
+          variant="ghost"
           onClick={onSkip}
-          sx={{
-            fontSize: '0.875rem',
-            color: '#535862',
-            '&:hover': {
-              backgroundColor: 'transparent',
-              textDecoration: 'underline',
-            },
-          }}
         >
           Skip for now
         </Button>
-      </Box>
+      </div>
 
       {/* Footer Note */}
-      <Typography
-        sx={{
-          fontSize: '0.75rem',
-          fontWeight: 400,
-          color: '#717680',
-          mt: 4,
-          textAlign: 'center',
-        }}
-      >
+      <p className="text-xs text-gray-500 mt-8 text-center">
         IncoXchange currently serves U.S.-based businesses only.
-      </Typography>
-    </Box>
+      </p>
+    </div>
   );
 }
-

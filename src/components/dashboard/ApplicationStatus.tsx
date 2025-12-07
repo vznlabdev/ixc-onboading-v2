@@ -1,22 +1,14 @@
 'use client';
 
 import React from 'react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
 import {
-  Box,
-  Typography,
-  Card,
-  CardContent,
-  LinearProgress,
-  Stepper,
-  Step,
-  StepLabel,
-  Chip,
-} from '@mui/material';
-import {
-  CheckCircle as CheckIcon,
-  HourglassEmpty as PendingIcon,
-  Cancel as RejectedIcon,
-} from '@mui/icons-material';
+  CheckCircle,
+  Clock,
+  XCircle,
+} from 'lucide-react';
 
 interface ApplicationStatusProps {
   status: 'pending' | 'under_review' | 'approved' | 'rejected';
@@ -29,36 +21,40 @@ export default function ApplicationStatus({ status, submittedAt }: ApplicationSt
       case 'pending':
         return {
           label: 'Not Submitted',
-          color: '#717680',
-          bgColor: '#F5F5F5',
-          icon: <PendingIcon />,
+          color: 'text-gray-600',
+          bgColor: 'bg-gray-100',
+          borderColor: 'border-gray-300',
+          icon: <Clock className="w-4 h-4" />,
           progress: 0,
           message: 'Your application has not been submitted yet.',
         };
       case 'under_review':
         return {
           label: 'Under Review',
-          color: '#f59e0b',
-          bgColor: '#fef3c7',
-          icon: <PendingIcon />,
+          color: 'text-yellow-700',
+          bgColor: 'bg-yellow-50',
+          borderColor: 'border-yellow-200',
+          icon: <Clock className="w-4 h-4" />,
           progress: 50,
           message: 'Your application is being reviewed by our team. This typically takes 2-3 business days.',
         };
       case 'approved':
         return {
           label: 'Approved',
-          color: '#10b981',
-          bgColor: '#d1fae5',
-          icon: <CheckIcon />,
+          color: 'text-emerald-700',
+          bgColor: 'bg-emerald-50',
+          borderColor: 'border-emerald-200',
+          icon: <CheckCircle className="w-4 h-4" />,
           progress: 100,
           message: 'Congratulations! Your application has been approved. You can now start using all features.',
         };
       case 'rejected':
         return {
           label: 'Rejected',
-          color: '#ef4444',
-          bgColor: '#fee2e2',
-          icon: <RejectedIcon />,
+          color: 'text-red-700',
+          bgColor: 'bg-red-50',
+          borderColor: 'border-red-200',
+          icon: <XCircle className="w-4 h-4" />,
           progress: 100,
           message: 'Your application was not approved. Please contact support for more information.',
         };
@@ -85,212 +81,138 @@ export default function ApplicationStatus({ status, submittedAt }: ApplicationSt
   };
 
   return (
-    <Card sx={{ borderRadius: 2, overflow: 'visible' }}>
-      <CardContent sx={{ p: 3 }}>
+    <Card className="border border-gray-200 rounded-lg shadow-none">
+      <CardContent className="p-6">
         {/* Header */}
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
-          <Typography
-            sx={{
-              fontSize: '1.125rem',
-              fontWeight: 600,
-              color: '#181D27',
-            }}
-          >
+        <div className="flex items-start justify-between mb-6">
+          <h3 className="text-base font-semibold text-black">
             Application Status
-          </Typography>
-          <Chip
-            icon={statusInfo.icon}
-            label={statusInfo.label}
-            sx={{
-              backgroundColor: statusInfo.bgColor,
-              color: statusInfo.color,
-              fontWeight: 600,
-              '& .MuiChip-icon': {
-                color: statusInfo.color,
-              },
-            }}
-          />
-        </Box>
+          </h3>
+          <Badge
+            className={`flex items-center gap-1.5 font-medium ${statusInfo.bgColor} ${statusInfo.color} ${statusInfo.borderColor} border px-2.5 py-0.5 hover:${statusInfo.bgColor}`}
+          >
+            {statusInfo.icon}
+            {statusInfo.label}
+          </Badge>
+        </div>
 
         {/* Status Message */}
-        <Typography
-          sx={{
-            fontSize: '0.875rem',
-            color: '#535862',
-            mb: 3,
-            lineHeight: 1.6,
-          }}
-        >
+        <p className="text-sm text-gray-600 mb-6 leading-relaxed">
           {statusInfo.message}
-        </Typography>
+        </p>
 
         {/* Submitted Date */}
         {submittedAt && (
-          <Box sx={{ mb: 3 }}>
-            <Typography sx={{ fontSize: '0.75rem', color: '#717680', mb: 0.5 }}>
+          <div className="mb-6 pb-6 border-b border-gray-200">
+            <p className="text-xs text-gray-500 mb-1 font-medium">
               Submitted On
-            </Typography>
-            <Typography sx={{ fontSize: '0.875rem', fontWeight: 500, color: '#181D27' }}>
+            </p>
+            <p className="text-sm text-gray-900 font-mono">
               {formatDate(submittedAt)}
-            </Typography>
-          </Box>
+            </p>
+          </div>
         )}
 
         {/* Progress Bar */}
         {status !== 'pending' && (
-          <Box sx={{ mb: 4 }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-              <Typography sx={{ fontSize: '0.75rem', fontWeight: 500, color: '#181D27' }}>
+          <div className="mb-8">
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-xs font-medium text-gray-900">
                 Progress
-              </Typography>
-              <Typography sx={{ fontSize: '0.75rem', fontWeight: 600, color: statusInfo.color }}>
+              </span>
+              <span className={`text-xs font-semibold ${statusInfo.color}`}>
                 {statusInfo.progress}%
-              </Typography>
-            </Box>
-            <LinearProgress
-              variant="determinate"
-              value={statusInfo.progress}
-              sx={{
-                height: 8,
-                borderRadius: 4,
-                backgroundColor: '#E9EAEB',
-                '& .MuiLinearProgress-bar': {
-                  backgroundColor: statusInfo.color,
-                  borderRadius: 4,
-                },
-              }}
-            />
-          </Box>
+              </span>
+            </div>
+            <Progress value={statusInfo.progress} className="h-1.5" />
+          </div>
         )}
 
         {/* Stepper */}
         {status !== 'pending' && (
-          <Stepper
-            activeStep={activeStep}
-            orientation="vertical"
-            sx={{
-              '& .MuiStepConnector-root': {
-                marginLeft: '12px',
-              },
-              '& .MuiStepConnector-line': {
-                minHeight: 30,
-                borderColor: '#E9EAEB',
-              },
-              '& .MuiStepLabel-root': {
-                padding: 0,
-              },
-            }}
-          >
-            {steps.map((step, index) => (
-              <Step key={step.label} completed={index < activeStep || status === 'approved' || status === 'rejected'}>
-                <StepLabel
-                  sx={{
-                    '& .MuiStepLabel-iconContainer': {
-                      pr: 2,
-                    },
-                  }}
-                  StepIconProps={{
-                    sx: {
-                      color: index <= activeStep ? statusInfo.color : '#E9EAEB',
-                      '&.Mui-completed': {
-                        color: status === 'rejected' && index === 2 ? '#ef4444' : '#10b981',
-                      },
-                      '&.Mui-active': {
-                        color: statusInfo.color,
-                      },
-                    },
-                  }}
-                >
-                  <Box>
-                    <Typography
-                      sx={{
-                        fontSize: '0.875rem',
-                        fontWeight: index <= activeStep ? 600 : 400,
-                        color: index <= activeStep ? '#181D27' : '#717680',
-                      }}
+          <div className="space-y-6">
+            {steps.map((step, index) => {
+              const isActive = index === activeStep;
+              const isCompleted = index < activeStep || status === 'approved' || status === 'rejected';
+              const isCurrent = index === activeStep;
+              
+              return (
+                <div key={step.label} className="flex gap-3">
+                  <div className="flex flex-col items-center">
+                    <div
+                      className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-semibold ${
+                        isCompleted
+                          ? status === 'rejected' && index === 2
+                            ? 'bg-red-600 text-white'
+                            : 'bg-emerald-600 text-white'
+                          : isCurrent
+                          ? 'bg-black text-white'
+                          : 'border-2 border-gray-300 text-gray-400 bg-white'
+                      }`}
+                    >
+                      {isCompleted ? '✓' : index + 1}
+                    </div>
+                    {index < steps.length - 1 && (
+                      <div className="w-0.5 h-6 bg-gray-200 my-1" />
+                    )}
+                  </div>
+                  <div className="flex-1 pb-1">
+                    <p
+                      className={`text-sm mb-0.5 ${
+                        index <= activeStep ? 'font-medium text-black' : 'font-normal text-gray-500'
+                      }`}
                     >
                       {step.label}
-                    </Typography>
-                    <Typography
-                      sx={{
-                        fontSize: '0.75rem',
-                        color: '#717680',
-                      }}
-                    >
+                    </p>
+                    <p className="text-xs text-gray-500">
                       {step.description}
-                    </Typography>
-                  </Box>
-                </StepLabel>
-              </Step>
-            ))}
-          </Stepper>
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         )}
 
         {/* Estimated Time */}
         {status === 'under_review' && (
-          <Box
-            sx={{
-              mt: 3,
-              p: 2,
-              backgroundColor: '#fef3c7',
-              borderRadius: 2,
-              border: '1px solid #fde68a',
-            }}
-          >
-            <Typography sx={{ fontSize: '0.75rem', fontWeight: 600, color: '#92400e', mb: 0.5 }}>
+          <div className="mt-6 p-3 border border-yellow-200 bg-yellow-50 rounded-lg">
+            <p className="text-xs font-medium text-yellow-900 mb-1">
               Estimated Review Time
-            </Typography>
-            <Typography sx={{ fontSize: '0.875rem', color: '#78350f' }}>
+            </p>
+            <p className="text-sm text-yellow-800">
               2-3 business days
-            </Typography>
-          </Box>
+            </p>
+          </div>
         )}
 
         {/* Approved Message */}
         {status === 'approved' && (
-          <Box
-            sx={{
-              mt: 3,
-              p: 2,
-              backgroundColor: '#d1fae5',
-              borderRadius: 2,
-              border: '1px solid #a7f3d0',
-            }}
-          >
-            <Typography sx={{ fontSize: '0.875rem', fontWeight: 600, color: '#065f46', mb: 0.5 }}>
-              🎉 Welcome to IncoXchange!
-            </Typography>
-            <Typography sx={{ fontSize: '0.75rem', color: '#047857' }}>
+          <div className="mt-6 p-3 border border-emerald-200 bg-emerald-50 rounded-lg">
+            <p className="text-sm font-medium text-emerald-900 mb-1">
+              Welcome to IncoXchange!
+            </p>
+            <p className="text-xs text-emerald-800">
               Your account is now fully activated. You can start managing your invoices and accessing funding.
-            </Typography>
-          </Box>
+            </p>
+          </div>
         )}
 
         {/* Contact Support */}
         {(status === 'under_review' || status === 'rejected') && (
-          <Box sx={{ mt: 3, pt: 3, borderTop: '1px solid #E9EAEB' }}>
-            <Typography sx={{ fontSize: '0.75rem', color: '#717680', textAlign: 'center' }}>
+          <div className="mt-6 pt-6 border-t border-gray-200">
+            <p className="text-xs text-gray-600 text-center">
               Questions? Contact us at{' '}
-              <Typography
-                component="a"
+              <a
                 href="mailto:help@incoxchange.com"
-                sx={{
-                  fontSize: '0.75rem',
-                  color: '#2164ef',
-                  fontWeight: 500,
-                  textDecoration: 'none',
-                  '&:hover': {
-                    textDecoration: 'underline',
-                  },
-                }}
+                className="text-black font-medium hover:underline"
               >
                 help@incoxchange.com
-              </Typography>
-            </Typography>
-          </Box>
+              </a>
+            </p>
+          </div>
         )}
       </CardContent>
     </Card>
   );
 }
-

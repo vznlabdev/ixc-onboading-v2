@@ -1,7 +1,8 @@
 'use client';
 
 import React from 'react';
-import { Box, Typography, Button } from '@mui/material';
+import Image from 'next/image';
+import { Button } from '@/components/ui/button';
 
 interface WelcomeStepProps {
   onNext: () => void;
@@ -10,105 +11,48 @@ interface WelcomeStepProps {
 
 export default function WelcomeStep({ onNext, onSkip }: WelcomeStepProps) {
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        minHeight: '100%',
-        textAlign: 'center',
-        px: { xs: 2, sm: 4 },
-        py: { xs: 4, sm: 6 },
-      }}
-    >
+    <div className="flex flex-col items-center justify-center min-h-full text-center px-4 sm:px-8 py-8 sm:py-12">
       {/* Logo */}
-      <Box
-        component="img"
+      <Image
         src="/incoxchange-logomark.svg"
         alt="IncoXchange Logo"
-        sx={{
-          width: { xs: 64, sm: 80 },
-          height: { xs: 64, sm: 80 },
-          mb: { xs: 3, sm: 4 },
-        }}
+        width={80}
+        height={80}
+        className="w-16 h-16 sm:w-20 sm:h-20 mb-6 sm:mb-8"
       />
 
       {/* Title */}
-      <Typography
-        sx={{
-          fontSize: { xs: '1.5rem', sm: '1.875rem' },
-          fontWeight: 600,
-          color: '#181D27',
-          mb: { xs: 2, sm: 3 },
-          lineHeight: 1.27,
-        }}
-      >
+      <h1 className="text-2xl sm:text-3xl font-semibold text-[#181D27] mb-4 sm:mb-6 leading-tight">
         Welcome to IncoXchange
-      </Typography>
+      </h1>
 
       {/* Description */}
-      <Typography
-        sx={{
-          fontSize: { xs: '1rem', sm: '1.125rem' },
-          fontWeight: 400,
-          color: '#535862',
-          mb: { xs: 3, sm: 4 },
-          maxWidth: 600,
-          lineHeight: 1.56,
-        }}
-      >
+      <p className="text-base sm:text-lg font-normal text-[#535862] mb-6 sm:mb-8 max-w-[600px] leading-relaxed">
         Let&apos;s get your business set up to manage invoices, customers, and payments.
-      </Typography>
+      </p>
 
       {/* Additional Info */}
-      <Typography
-        sx={{
-          fontSize: { xs: '0.875rem', sm: '1rem' },
-          fontWeight: 400,
-          color: '#535862',
-          mb: { xs: 4, sm: 6 },
-          maxWidth: 600,
-          lineHeight: 1.5,
-        }}
-      >
+      <p className="text-sm sm:text-base font-normal text-[#535862] mb-8 sm:mb-12 max-w-[600px] leading-normal">
         We&apos;ll guide you through a few quick steps to personalize your account and enable funding. It only takes a few minutes, you can save and resume anytime.
-      </Typography>
+      </p>
 
       {/* Action Buttons */}
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 4 }}>
+      <div className="flex flex-col gap-3 mt-8">
         <Button
-          variant="contained"
-          size="medium"
           onClick={onNext}
           aria-label="Start onboarding setup"
-          sx={{
-            px: 4,
-            py: 1,
-            fontSize: '0.875rem',
-            fontWeight: 500,
-            borderRadius: 2,
-          }}
+          size="lg"
         >
           Start setup
         </Button>
         <Button
-          variant="text"
-          size="small"
+          variant="ghost"
           onClick={onSkip}
-          sx={{
-            fontSize: '0.875rem',
-            color: '#535862',
-            '&:hover': {
-              backgroundColor: 'transparent',
-              textDecoration: 'underline',
-            },
-          }}
         >
           Skip for now
         </Button>
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
 }
 

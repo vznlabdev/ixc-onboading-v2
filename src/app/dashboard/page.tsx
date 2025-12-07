@@ -2,28 +2,26 @@
 
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { useUser } from '@/contexts/UserContext';
+import { Button } from '@/components/ui/button';
 import {
-  Box,
-  Typography,
-  Button,
-  Container,
-  IconButton,
-  Menu,
-  MenuItem,
-} from '@mui/material';
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import {
-  Logout as LogoutIcon,
-  AccountCircle as AccountIcon,
-  ArrowBack as BackIcon,
-} from '@mui/icons-material';
+  LogOut,
+  User,
+  ArrowLeft,
+} from 'lucide-react';
 import ApplicationStatus from '@/components/dashboard/ApplicationStatus';
 import ApplicationPreview from '@/components/dashboard/ApplicationPreview';
 
 export default function DashboardPage() {
   const router = useRouter();
   const { isAuthenticated, userEmail, onboardingData, applicationStatus, submittedAt, isLoading, signOut } = useUser();
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   // Debug logging
   React.useEffect(() => {
@@ -39,14 +37,6 @@ export default function DashboardPage() {
     }
   }, [isAuthenticated, isLoading, router]);
 
-  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
-
   const handleSignOut = () => {
     signOut();
     router.push('/signup');
@@ -59,37 +49,14 @@ export default function DashboardPage() {
   // Show loading if checking authentication
   if (isLoading) {
     return (
-      <Box
-        sx={{
-          minHeight: '100vh',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          backgroundColor: '#F5F5F5',
-        }}
-      >
-        <Box sx={{ textAlign: 'center' }}>
-          <Box
-            sx={{
-              width: 40,
-              height: 40,
-              border: '4px solid #E9EAEB',
-              borderTop: '4px solid #2164ef',
-              borderRadius: '50%',
-              animation: 'spin 1s linear infinite',
-              margin: '0 auto',
-              mb: 2,
-              '@keyframes spin': {
-                '0%': { transform: 'rotate(0deg)' },
-                '100%': { transform: 'rotate(360deg)' },
-              },
-            }}
-          />
-          <Typography sx={{ fontSize: '0.875rem', color: '#717680' }}>
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="text-center">
+          <div className="w-8 h-8 border-2 border-gray-200 border-t-black rounded-full animate-spin mx-auto mb-3" />
+          <p className="text-sm text-gray-600">
             Loading...
-          </Typography>
-        </Box>
-      </Box>
+          </p>
+        </div>
+      </div>
     );
   }
 
@@ -107,452 +74,240 @@ export default function DashboardPage() {
 
   if (!hasOnboardingData && applicationStatus === 'pending') {
     return (
-      <Box
-        sx={{
-          minHeight: '100vh',
-          backgroundColor: '#F5F5F5',
-        }}
-      >
+      <div className="min-h-screen bg-white">
         {/* Header */}
-        <Box
-          sx={{
-            backgroundColor: 'white',
-            borderBottom: '1px solid #E9EAEB',
-            py: 2,
-            px: { xs: 2, sm: 4 },
-          }}
-        >
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-              <Box
-                component="img"
-                src="/incoxchange-logomark.svg"
-                alt="IncoXchange Logo"
-                sx={{
-                  width: 32,
-                  height: 32,
-                }}
-              />
-              <Typography
-                sx={{
-                  fontSize: '1.125rem',
-                  fontWeight: 600,
-                  color: '#181D27',
-                }}
-              >
+        <div className="border-b border-gray-200 h-16 flex items-center px-6">
+          <div className="max-w-screen-2xl mx-auto w-full flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-6 h-6 relative">
+                <Image
+                  src="/incoxchange-logomark.svg"
+                  alt="IncoXchange Logo"
+                  fill
+                  className="object-contain"
+                />
+              </div>
+              <h1 className="text-base font-semibold text-black">
                 incoXchange
-              </Typography>
-            </Box>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <Typography sx={{ fontSize: '0.875rem', color: '#535862', display: { xs: 'none', sm: 'block' } }}>
+              </h1>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="text-sm text-gray-600 hidden sm:block">
                 {userEmail}
-              </Typography>
-              <IconButton onClick={handleMenuOpen} size="small">
-                <AccountIcon />
-              </IconButton>
-              <Menu
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={handleMenuClose}
-              >
-                <MenuItem onClick={handleSignOut}>
-                  <LogoutIcon sx={{ mr: 1, fontSize: 20 }} />
-                  Sign Out
-                </MenuItem>
-              </Menu>
-            </Box>
-          </Box>
-        </Box>
+              </span>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-full hover:bg-gray-100">
+                    <User className="w-4 h-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem onClick={handleSignOut}>
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          </div>
+        </div>
 
         {/* Content */}
-        <Container maxWidth="md" sx={{ py: 6 }}>
-          <Box sx={{ textAlign: 'center' }}>
-            <Typography
-              sx={{
-                fontSize: '1.5rem',
-                fontWeight: 600,
-                color: '#181D27',
-                mb: 2,
-              }}
-            >
-              Welcome to IncoXchange!
-            </Typography>
-            <Typography
-              sx={{
-                fontSize: '1rem',
-                color: '#535862',
-                mb: 4,
-              }}
-            >
+        <div className="max-w-2xl mx-auto py-20 px-6">
+          <div className="text-center">
+            <h2 className="text-3xl font-bold text-black mb-3 tracking-tight">
+              Welcome to IncoXchange
+            </h2>
+            <p className="text-base text-gray-600 mb-8 max-w-md mx-auto">
               Complete your onboarding to get started with your account.
-            </Typography>
+            </p>
             <Button
-              variant="contained"
               onClick={handleBackToOnboarding}
-              sx={{
-                fontSize: '0.875rem',
-                fontWeight: 500,
-                borderRadius: 2,
-                px: 4,
-                py: 1.5,
-              }}
+              className="bg-black hover:bg-gray-800 text-white h-10 px-6 rounded-md text-sm font-medium"
             >
               Start Onboarding
             </Button>
-          </Box>
-        </Container>
-      </Box>
+          </div>
+        </div>
+      </div>
     );
   }
 
   return (
-    <Box
-      sx={{
-        minHeight: '100vh',
-        backgroundColor: '#F5F5F5',
-      }}
-    >
-      {/* Header */}
-      <Box
-        sx={{
-          backgroundColor: 'white',
-          borderBottom: '1px solid #E9EAEB',
-          py: 2,
-          px: { xs: 2, sm: 4 },
-        }}
-      >
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-            <Box
-              component="img"
-              src="/incoxchange-logomark.svg"
-              alt="IncoXchange Logo"
-              sx={{
-                width: 32,
-                height: 32,
-              }}
-            />
-            <Typography
-              sx={{
-                fontSize: '1.125rem',
-                fontWeight: 600,
-                color: '#181D27',
-              }}
-            >
+    <div className="min-h-screen bg-white">
+      {/* Header - Vercel Style */}
+      <div className="border-b border-gray-200 h-16 flex items-center px-6">
+        <div className="max-w-screen-2xl mx-auto w-full flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-6 h-6 relative">
+              <Image
+                src="/incoxchange-logomark.svg"
+                alt="IncoXchange Logo"
+                fill
+                className="object-contain"
+              />
+            </div>
+            <h1 className="text-base font-semibold text-black">
               incoXchange
-            </Typography>
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <Typography sx={{ fontSize: '0.875rem', color: '#535862', display: { xs: 'none', sm: 'block' } }}>
+            </h1>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="text-sm text-gray-600 hidden sm:block">
               {userEmail}
-            </Typography>
-            <IconButton onClick={handleMenuOpen} size="small">
-              <AccountIcon />
-            </IconButton>
-            <Menu
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={handleMenuClose}
-            >
-              <MenuItem onClick={handleSignOut}>
-                <LogoutIcon sx={{ mr: 1, fontSize: 20 }} />
-                Sign Out
-              </MenuItem>
-            </Menu>
-          </Box>
-        </Box>
-      </Box>
+            </span>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-full hover:bg-gray-100">
+                  <User className="w-4 h-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem onClick={handleSignOut}>
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Sign Out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </div>
+      </div>
 
       {/* Content */}
-      <Container maxWidth="lg" sx={{ py: { xs: 3, sm: 4, md: 6 } }}>
-        {/* User Profile Section */}
-        <Box sx={{ mb: 4, textAlign: 'center' }}>
-          {/* Avatar with Initials */}
-          <Box
-            sx={{
-              width: { xs: 80, sm: 96 },
-              height: { xs: 80, sm: 96 },
-              borderRadius: '50%',
-              backgroundColor: '#2164ef',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: '0 auto',
-              mb: 2,
-              fontSize: { xs: '2rem', sm: '2.5rem' },
-              fontWeight: 500,
-              color: 'white',
-              position: 'relative',
-              '&::after': {
-                content: '""',
-                position: 'absolute',
-                inset: -3,
-                borderRadius: '50%',
-                border: '3px solid #E9EAEB',
-              },
-            }}
-          >
-            {(() => {
-              const businessName = onboardingData?.businessProfile?.businessName;
-              if (businessName) {
-                // Use business name for initials
-                return businessName
-                  .split(/\s+/)
-                  .map((word) => word[0])
+      <div className="max-w-screen-2xl mx-auto py-8 px-6">
+        {/* User Profile Section - Vercel Style */}
+        <div className="mb-12">
+          <div className="flex items-center gap-4 mb-6">
+            {/* Simple Avatar */}
+            <div className="w-16 h-16 rounded-full bg-black flex items-center justify-center text-white text-xl font-semibold">
+              {(() => {
+                const businessName = onboardingData?.businessProfile?.businessName;
+                if (businessName) {
+                  return businessName
+                    .split(/\s+/)
+                    .map((word) => word[0])
+                    .join('')
+                    .toUpperCase()
+                    .slice(0, 2);
+                }
+                return userEmail
+                  ?.split('@')[0]
+                  .split(/[._-]/)
+                  .map((part) => part[0])
                   .join('')
                   .toUpperCase()
-                  .slice(0, 2);
-              }
-              // Fallback to email
-              return userEmail
-                ?.split('@')[0]
-                .split(/[._-]/)
-                .map((part) => part[0])
-                .join('')
-                .toUpperCase()
-                .slice(0, 2) || 'U';
-            })()}
-          </Box>
+                  .slice(0, 2) || 'U';
+              })()}
+            </div>
 
-          {/* Business/User Name */}
-          <Typography
-            sx={{
-              fontSize: { xs: '1.5rem', sm: '1.875rem' },
-              fontWeight: 600,
-              color: '#181D27',
-              mb: 0.5,
-              letterSpacing: '-0.01em',
-            }}
-          >
-            {onboardingData?.businessProfile?.businessName || 
-             userEmail?.split('@')[0].replace(/[._-]/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase()) || 
-             'User'}
-          </Typography>
+            <div>
+              {/* Business/User Name */}
+              <h2 className="text-2xl font-bold text-black mb-1 tracking-tight">
+                {onboardingData?.businessProfile?.businessName || 
+                 userEmail?.split('@')[0].replace(/[._-]/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase()) || 
+                 'User'}
+              </h2>
 
-          {/* User Email */}
-          <Typography
-            sx={{
-              fontSize: { xs: '0.875rem', sm: '1rem' },
-              color: '#535862',
-              fontWeight: 400,
-              mb: onboardingData?.businessProfile?.businessType ? 1 : 0,
-            }}
-          >
-            {userEmail}
-          </Typography>
+              {/* User Email */}
+              <p className="text-sm text-gray-600">
+                {userEmail}
+              </p>
+            </div>
+          </div>
 
-          {/* Business Info - Show if available */}
+          {/* Business Info Tags */}
           {onboardingData?.businessProfile && (
-            <Box
-              sx={{
-                display: 'flex',
-                gap: 2,
-                justifyContent: 'center',
-                flexWrap: 'wrap',
-                mt: 1,
-              }}
-            >
+            <div className="flex gap-2 flex-wrap">
               {onboardingData.businessProfile.businessType && (
-                <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 0.5,
-                    px: 2,
-                    py: 0.5,
-                    backgroundColor: '#F5F5F5',
-                    borderRadius: 2,
-                  }}
-                >
-                  <Typography
-                    sx={{
-                      fontSize: '0.75rem',
-                      color: '#717680',
-                      textTransform: 'capitalize',
-                    }}
-                  >
-                    {onboardingData.businessProfile.businessType.replace('_', ' ')}
-                  </Typography>
-                </Box>
+                <div className="inline-flex items-center px-3 py-1 border border-gray-200 rounded-md text-xs text-gray-700 capitalize">
+                  {onboardingData.businessProfile.businessType.replace('_', ' ')}
+                </div>
               )}
               {onboardingData.businessProfile.industry && (
-                <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 0.5,
-                    px: 2,
-                    py: 0.5,
-                    backgroundColor: '#F5F5F5',
-                    borderRadius: 2,
-                  }}
-                >
-                  <Typography
-                    sx={{
-                      fontSize: '0.75rem',
-                      color: '#717680',
-                      textTransform: 'capitalize',
-                    }}
-                  >
-                    {onboardingData.businessProfile.industry.replace('_', ' ')}
-                  </Typography>
-                </Box>
+                <div className="inline-flex items-center px-3 py-1 border border-gray-200 rounded-md text-xs text-gray-700 capitalize">
+                  {onboardingData.businessProfile.industry.replace('_', ' ')}
+                </div>
               )}
               {onboardingData.businessProfile.ein && (
-                <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 0.5,
-                    px: 2,
-                    py: 0.5,
-                    backgroundColor: '#F5F5F5',
-                    borderRadius: 2,
-                  }}
-                >
-                  <Typography
-                    sx={{
-                      fontSize: '0.75rem',
-                      color: '#717680',
-                    }}
-                  >
-                    EIN: {onboardingData.businessProfile.ein}
-                  </Typography>
-                </Box>
+                <div className="inline-flex items-center px-3 py-1 border border-gray-200 rounded-md text-xs text-gray-600 font-mono">
+                  EIN: {onboardingData.businessProfile.ein}
+                </div>
               )}
-            </Box>
+            </div>
           )}
-        </Box>
+        </div>
 
         {/* Continue/Back to Onboarding Button (only show if not submitted) */}
         {applicationStatus === 'pending' && (
-          <Box 
-            sx={{ 
-              mb: 3,
-              p: 3,
-              backgroundColor: '#fef3c7',
-              borderRadius: 2,
-              border: '1px solid #fde68a',
-            }}
-          >
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 2 }}>
-              <Box>
-                <Typography sx={{ fontSize: '0.875rem', fontWeight: 600, color: '#92400e', mb: 0.5 }}>
-                  ⚠️ Application Not Submitted
-                </Typography>
-                <Typography sx={{ fontSize: '0.75rem', color: '#78350f' }}>
+          <div className="mb-8 p-4 border border-yellow-200 bg-yellow-50 rounded-lg">
+            <div className="flex items-start justify-between gap-4 flex-wrap">
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-yellow-900 mb-1">
+                  Application Not Submitted
+                </p>
+                <p className="text-sm text-yellow-800">
                   Your application is incomplete. Continue where you left off to submit it for review.
-                </Typography>
-              </Box>
+                </p>
+              </div>
               <Button
-                variant="contained"
-                startIcon={<BackIcon />}
                 onClick={handleBackToOnboarding}
-                sx={{
-                  fontSize: '0.875rem',
-                  fontWeight: 500,
-                  borderRadius: 2,
-                  backgroundColor: '#2164ef',
-                  '&:hover': {
-                    backgroundColor: '#1a4edb',
-                  },
-                }}
+                size="sm"
+                className="bg-black hover:bg-gray-800 text-white h-9 px-4 rounded-md text-sm flex-shrink-0"
               >
-                Continue Application
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Continue
               </Button>
-            </Box>
-          </Box>
+            </div>
+          </div>
         )}
 
         {/* Two Column Layout */}
-        <Box
-          sx={{
-            display: 'grid',
-            gridTemplateColumns: { xs: '1fr', lg: '1fr 1.5fr' },
-            gap: 3,
-            alignItems: 'start',
-          }}
-        >
+        <div className="grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-8 items-start">
           {/* Left Column - Application Status */}
-          <Box sx={{ position: { lg: 'sticky' }, top: { lg: 24 } }}>
+          <div className="lg:sticky lg:top-6">
             <ApplicationStatus status={applicationStatus} submittedAt={submittedAt} />
-          </Box>
+          </div>
 
           {/* Right Column - Application Preview */}
-          <Box>
-            <Box sx={{ mb: 3 }}>
-              <Typography
-                sx={{
-                  fontSize: '1.25rem',
-                  fontWeight: 600,
-                  color: '#181D27',
-                  mb: 1,
-                }}
-              >
+          <div>
+            <div className="mb-6">
+              <h3 className="text-xl font-semibold text-black mb-1 tracking-tight">
                 Application Details
-              </Typography>
-              <Typography
-                sx={{
-                  fontSize: '0.875rem',
-                  color: '#717680',
-                }}
-              >
+              </h3>
+              <p className="text-sm text-gray-600">
                 Review the information you submitted for your application.
-              </Typography>
-            </Box>
+              </p>
+            </div>
             <ApplicationPreview data={onboardingData!} />
-          </Box>
-        </Box>
+          </div>
+        </div>
 
         {/* Bottom Action - Edit Application (only if pending) */}
         {applicationStatus === 'pending' && (
-          <Box
-            sx={{
-              mt: 4,
-              p: 3,
-              backgroundColor: 'white',
-              borderRadius: 2,
-              border: '1px solid #E9EAEB',
-              textAlign: 'center',
-            }}
-          >
-            <Typography sx={{ fontSize: '0.875rem', color: '#535862', mb: 2 }}>
+          <div className="mt-12 p-6 border border-gray-200 rounded-lg text-center">
+            <p className="text-sm text-gray-600 mb-4">
               Need to make changes to your application?
-            </Typography>
+            </p>
             <Button
-              variant="outlined"
+              variant="outline"
               onClick={handleBackToOnboarding}
-              sx={{
-                fontSize: '0.875rem',
-                fontWeight: 500,
-                borderRadius: 2,
-                px: 4,
-              }}
+              className="h-9 px-6 rounded-md text-sm font-medium border-gray-300 hover:bg-gray-50"
             >
               Edit Application
             </Button>
-          </Box>
+          </div>
         )}
 
         {/* Note about editing */}
         {applicationStatus !== 'pending' && (
-          <Box
-            sx={{
-              mt: 4,
-              p: 3,
-              backgroundColor: 'white',
-              borderRadius: 2,
-              border: '1px solid #E9EAEB',
-            }}
-          >
-            <Typography sx={{ fontSize: '0.875rem', color: '#717680', textAlign: 'center' }}>
-              📌 Your application is currently {applicationStatus === 'under_review' ? 'under review' : applicationStatus}. 
+          <div className="mt-12 p-4 border border-gray-200 rounded-lg">
+            <p className="text-sm text-gray-600 text-center">
+              Your application is currently {applicationStatus === 'under_review' ? 'under review' : applicationStatus}. 
               {applicationStatus === 'under_review' && ' You cannot make changes while the application is being reviewed.'}
               {applicationStatus === 'approved' && ' If you need to update your information, please contact support.'}
-            </Typography>
-          </Box>
+            </p>
+          </div>
         )}
-      </Container>
-    </Box>
+      </div>
+    </div>
   );
 }

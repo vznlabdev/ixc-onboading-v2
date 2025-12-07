@@ -1,20 +1,13 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import {
-  Box,
-  Typography,
-  Button,
-  Checkbox,
-  FormControlLabel,
-  Paper,
-  TextField,
-  Divider,
-} from '@mui/material';
-import {
-  Description as DescriptionIcon,
-  Celebration as CelebrationIcon,
-} from '@mui/icons-material';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
+import { FileText, PartyPopper } from 'lucide-react';
 import { useUser } from '@/contexts/UserContext';
 
 interface FactoringAgreementStepProps {
@@ -74,398 +67,198 @@ export default function FactoringAgreementStep({
   // Success Screen
   if (showSuccess) {
     return (
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          minHeight: '100%',
-          px: { xs: 2, sm: 4 },
-          py: { xs: 4, sm: 6 },
-          textAlign: 'center',
-        }}
-      >
+      <div className="flex flex-col items-center justify-center min-h-full px-4 sm:px-8 py-8 sm:py-12 text-center">
         {/* Success Icon */}
-        <Box
-          sx={{
-            width: 100,
-            height: 100,
-            borderRadius: '50%',
-            backgroundColor: '#d1fae5',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            mb: 4,
-          }}
-        >
-          <CelebrationIcon sx={{ fontSize: 50, color: '#10b981' }} />
-        </Box>
+        <div className="w-24 h-24 rounded-full bg-emerald-100 flex items-center justify-center mb-8">
+          <PartyPopper className="w-12 h-12 text-emerald-500" />
+        </div>
 
         {/* Title */}
-        <Typography
-          sx={{
-            fontSize: { xs: '1.5rem', sm: '1.875rem' },
-            fontWeight: 600,
-            color: '#181D27',
-            mb: 2,
-          }}
-        >
+        <h1 className="text-2xl sm:text-3xl font-semibold text-[#181D27] mb-4">
           Welcome to IncoXchange!
-        </Typography>
+        </h1>
 
         {/* Description */}
-        <Typography
-          sx={{
-            fontSize: { xs: '0.875rem', sm: '1rem' },
-            fontWeight: 400,
-            color: '#535862',
-            mb: 2,
-            maxWidth: 600,
-          }}
-        >
+        <p className="text-sm sm:text-base font-normal text-[#535862] mb-4 max-w-[600px]">
           Your account has been successfully set up.
-        </Typography>
+        </p>
 
         {/* Additional Info */}
-        <Typography
-          sx={{
-            fontSize: '0.875rem',
-            fontWeight: 400,
-            color: '#717680',
-            maxWidth: 600,
-          }}
-        >
+        <p className="text-sm font-normal text-[#717680] max-w-[600px]">
           We&apos;re preparing your dashboard. You&apos;ll be redirected shortly.
-        </Typography>
+        </p>
 
         {/* Loading Indicator */}
-        <Box
-          sx={{
-            mt: 4,
-            display: 'flex',
-            gap: 1,
-          }}
-        >
+        <div className="mt-8 flex gap-2">
           {[0, 1, 2].map((i) => (
-            <Box
+            <div
               key={i}
-              sx={{
-                width: 8,
-                height: 8,
-                borderRadius: '50%',
-                backgroundColor: '#2164ef',
-                animation: 'bounce 1.4s ease-in-out infinite',
-                animationDelay: `${i * 0.16}s`,
-                '@keyframes bounce': {
-                  '0%, 80%, 100%': { transform: 'scale(0)' },
-                  '40%': { transform: 'scale(1)' },
-                },
-              }}
+              className="w-2 h-2 rounded-full bg-[#2164ef] animate-bounce"
+              style={{ animationDelay: `${i * 0.16}s` }}
             />
           ))}
-        </Box>
-      </Box>
+        </div>
+      </div>
     );
   }
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        minHeight: '100%',
-        px: { xs: 2, sm: 4 },
-        py: { xs: 4, sm: 6 },
-        maxWidth: 800,
-        mx: 'auto',
-      }}
-    >
+    <div className="flex flex-col items-center min-h-full px-4 sm:px-8 py-8 sm:py-12 max-w-[800px] mx-auto">
       {/* Title */}
-      <Typography
-        sx={{
-          fontSize: { xs: '1.5rem', sm: '1.875rem' },
-          fontWeight: 600,
-          color: '#181D27',
-          mb: 2,
-          textAlign: 'center',
-        }}
-      >
+      <h1 className="text-2xl sm:text-3xl font-semibold text-[#181D27] mb-4 text-center">
         Sign the factoring agreement
-      </Typography>
+      </h1>
 
       {/* Description */}
-      <Typography
-        sx={{
-          fontSize: { xs: '0.875rem', sm: '1rem' },
-          fontWeight: 400,
-          color: '#535862',
-          mb: 6,
-          textAlign: 'center',
-          maxWidth: 600,
-        }}
-      >
+      <p className="text-sm sm:text-base font-normal text-[#535862] mb-12 text-center max-w-[600px]">
         Review and sign the agreement to complete your onboarding and start accessing funding.
-      </Typography>
+      </p>
 
       {/* Agreement Document */}
-      <Paper
-        elevation={0}
-        sx={{
-          width: '100%',
-          border: '1px solid #E9EAEB',
-          borderRadius: 2,
-          mb: 4,
-        }}
-      >
+      <Card className="w-full border border-[#E9EAEB] rounded-lg mb-8">
         {/* Document Header */}
-        <Box
-          sx={{
-            p: 3,
-            backgroundColor: '#FAFAFA',
-            borderBottom: '1px solid #E9EAEB',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 2,
-          }}
-        >
-          <DescriptionIcon sx={{ color: '#2164ef', fontSize: 24 }} />
-          <Box>
-            <Typography
-              sx={{
-                fontSize: '1rem',
-                fontWeight: 600,
-                color: '#181D27',
-              }}
-            >
+        <CardHeader className="p-6 bg-[#FAFAFA] border-b border-[#E9EAEB] flex flex-row items-center gap-4">
+          <FileText className="text-[#2164ef] w-6 h-6 flex-shrink-0" />
+          <div>
+            <h3 className="text-base font-semibold text-[#181D27]">
               Factoring Services Agreement
-            </Typography>
-            <Typography
-              sx={{
-                fontSize: '0.75rem',
-                color: '#717680',
-              }}
-            >
+            </h3>
+            <p className="text-xs text-[#717680]">
               Last updated: November 13, 2025
-            </Typography>
-          </Box>
-        </Box>
+            </p>
+          </div>
+        </CardHeader>
 
         {/* Agreement Content */}
-        <Box
-          sx={{
-            p: 4,
-            maxHeight: 400,
-            overflowY: 'auto',
-            fontSize: '0.875rem',
-            lineHeight: 1.8,
-            color: '#535862',
-          }}
-        >
-          <Typography sx={{ fontSize: '0.875rem', fontWeight: 600, color: '#181D27', mb: 2 }}>
+        <CardContent className="p-8 max-h-[400px] overflow-y-auto text-sm leading-relaxed text-[#535862]">
+          <h4 className="text-sm font-semibold text-[#181D27] mb-3">
             1. Services Provided
-          </Typography>
-          <Typography sx={{ fontSize: '0.875rem', mb: 3 }}>
+          </h4>
+          <p className="text-sm mb-6">
             IncoXchange agrees to provide invoice factoring services to facilitate cash flow management
             for your business. We will purchase approved invoices at an agreed-upon discount rate and
             provide immediate funding to your designated bank account.
-          </Typography>
+          </p>
 
-          <Typography sx={{ fontSize: '0.875rem', fontWeight: 600, color: '#181D27', mb: 2 }}>
+          <h4 className="text-sm font-semibold text-[#181D27] mb-3">
             2. Terms and Conditions
-          </Typography>
-          <Typography sx={{ fontSize: '0.875rem', mb: 3 }}>
+          </h4>
+          <p className="text-sm mb-6">
             The factoring fee will be calculated based on the invoice amount and payment terms.
             Standard fees range from 1-5% depending on customer creditworthiness and payment timeline.
             You will receive funding within 24 hours of invoice approval.
-          </Typography>
+          </p>
 
-          <Typography sx={{ fontSize: '0.875rem', fontWeight: 600, color: '#181D27', mb: 2 }}>
+          <h4 className="text-sm font-semibold text-[#181D27] mb-3">
             3. Customer Verification
-          </Typography>
-          <Typography sx={{ fontSize: '0.875rem', mb: 3 }}>
+          </h4>
+          <p className="text-sm mb-6">
             We reserve the right to verify and approve customers before purchasing invoices.
             Customer credit checks may be performed. You warrant that all invoices submitted
             represent legitimate business transactions.
-          </Typography>
+          </p>
 
-          <Typography sx={{ fontSize: '0.875rem', fontWeight: 600, color: '#181D27', mb: 2 }}>
+          <h4 className="text-sm font-semibold text-[#181D27] mb-3">
             4. Payment Responsibility
-          </Typography>
-          <Typography sx={{ fontSize: '0.875rem', mb: 3 }}>
+          </h4>
+          <p className="text-sm mb-6">
             In the event of customer non-payment after 90 days, you agree to repurchase the invoice
             at face value. We will work with you to recover outstanding payments before exercising
             this option.
-          </Typography>
+          </p>
 
-          <Typography sx={{ fontSize: '0.875rem', fontWeight: 600, color: '#181D27', mb: 2 }}>
+          <h4 className="text-sm font-semibold text-[#181D27] mb-3">
             5. Data Security and Privacy
-          </Typography>
-          <Typography sx={{ fontSize: '0.875rem', mb: 3 }}>
+          </h4>
+          <p className="text-sm mb-6">
             All your business data, customer information, and banking details are encrypted using
             256-bit SSL encryption. We never sell or share your data with third parties. Your
             information is used solely for providing factoring services.
-          </Typography>
+          </p>
 
-          <Typography sx={{ fontSize: '0.875rem', fontWeight: 600, color: '#181D27', mb: 2 }}>
+          <h4 className="text-sm font-semibold text-[#181D27] mb-3">
             6. Termination
-          </Typography>
-          <Typography sx={{ fontSize: '0.875rem' }}>
+          </h4>
+          <p className="text-sm">
             Either party may terminate this agreement with 30 days written notice. Outstanding
             invoices and obligations will remain in effect until fully settled.
-          </Typography>
-        </Box>
-      </Paper>
+          </p>
+        </CardContent>
+      </Card>
 
       {/* Agreement Checkbox */}
-      <Box sx={{ width: '100%', mb: 3 }}>
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={agreed}
-              onChange={(e) => setAgreed(e.target.checked)}
-              sx={{
-                color: '#717680',
-                '&.Mui-checked': {
-                  color: '#2164ef',
-                },
-              }}
-            />
-          }
-          label={
-            <Typography sx={{ fontSize: '0.875rem', color: '#181D27' }}>
-              I have read and agree to the terms of the Factoring Services Agreement
-            </Typography>
-          }
-        />
-      </Box>
+      <div className="w-full mb-6">
+        <div className="flex items-start gap-3">
+          <Checkbox
+            id="agree"
+            checked={agreed}
+            onCheckedChange={(checked) => setAgreed(checked as boolean)}
+            className="mt-1"
+          />
+          <Label htmlFor="agree" className="text-sm text-[#181D27] cursor-pointer">
+            I have read and agree to the terms of the Factoring Services Agreement
+          </Label>
+        </div>
+      </div>
 
-      <Divider sx={{ width: '100%', mb: 3 }} />
+      <Separator className="w-full mb-6" />
 
       {/* Signature Field */}
-      <Box sx={{ width: '100%', mb: 4 }}>
-        <Typography
-          sx={{
-            fontSize: '0.875rem',
-            fontWeight: 600,
-            color: '#181D27',
-            mb: 2,
-          }}
-        >
-          Electronic Signature *
-        </Typography>
-        <TextField
-          fullWidth
+      <div className="w-full mb-8">
+        <Label htmlFor="signature" className="text-sm font-semibold text-[#181D27] mb-3 block">
+          Electronic Signature <span className="text-red-500">*</span>
+        </Label>
+        <Input
+          id="signature"
           placeholder="Type your full name to sign"
           value={signature}
           onChange={(e) => setSignature(e.target.value)}
           disabled={!agreed}
-          variant="outlined"
-          helperText="By typing your name, you agree to sign this document electronically"
-          sx={{
-            '& .MuiOutlinedInput-root': {
-              borderRadius: 2,
-              backgroundColor: agreed ? 'white' : '#F5F5F5',
-            },
-          }}
+          className={`rounded-lg ${!agreed ? 'bg-[#F5F5F5]' : 'bg-white'}`}
         />
+        <p className="text-xs text-[#717680] mt-2">
+          By typing your name, you agree to sign this document electronically
+        </p>
         {signature && (
-          <Box
-            sx={{
-              mt: 2,
-              p: 2,
-              backgroundColor: '#FAFAFA',
-              borderRadius: 1,
-              borderLeft: '3px solid #2164ef',
-            }}
-          >
-            <Typography
-              sx={{
-                fontSize: '1.25rem',
-                fontFamily: 'cursive',
-                color: '#181D27',
-                fontStyle: 'italic',
-              }}
-            >
+          <div className="mt-4 p-4 bg-[#FAFAFA] rounded border-l-4 border-[#2164ef]">
+            <p className="text-xl font-cursive italic text-[#181D27] mb-2">
               {signature}
-            </Typography>
-            <Typography
-              sx={{
-                fontSize: '0.75rem',
-                color: '#717680',
-                mt: 1,
-              }}
-            >
+            </p>
+            <p className="text-xs text-[#717680]">
               Signed on {new Date().toLocaleDateString('en-US', { 
                 year: 'numeric', 
                 month: 'long', 
                 day: 'numeric' 
               })}
-            </Typography>
-          </Box>
+            </p>
+          </div>
         )}
-      </Box>
+      </div>
 
       {/* Action Buttons */}
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 2,
-          width: '100%',
-          alignItems: 'center',
-        }}
-      >
+      <div className="flex flex-col gap-4 w-full items-center">
         <Button
-          variant="contained"
-          size="medium"
           onClick={handleSignAgreement}
           disabled={!agreed || !signature.trim() || isSigning}
           aria-label="Sign agreement and complete onboarding"
-          sx={{
-            px: 4,
-            py: 1,
-            fontSize: '0.875rem',
-            fontWeight: 500,
-            borderRadius: 2,
-            minWidth: 200,
-          }}
+          className="px-8 py-2 text-sm font-medium rounded-lg min-w-[200px]"
         >
           {isSigning ? 'Processing...' : 'Sign Agreement'}
         </Button>
         <Button
-          variant="text"
-          size="small"
+          variant="ghost"
           onClick={onSkip}
-          sx={{
-            fontSize: '0.875rem',
-            color: '#535862',
-            '&:hover': {
-              backgroundColor: 'transparent',
-              textDecoration: 'underline',
-            },
-          }}
+          className="text-sm text-[#535862] hover:bg-transparent hover:underline"
         >
           Save and finish later
         </Button>
-      </Box>
+      </div>
 
       {/* Legal Note */}
-      <Typography
-        sx={{
-          fontSize: '0.75rem',
-          fontWeight: 400,
-          color: '#717680',
-          mt: 4,
-          textAlign: 'center',
-          maxWidth: 600,
-        }}
-      >
+      <p className="text-xs font-normal text-[#717680] mt-8 text-center max-w-[600px]">
         This electronic signature has the same legal effect as a handwritten signature.
         A copy of the signed agreement will be sent to your email.
-      </Typography>
-    </Box>
+      </p>
+    </div>
   );
 }
-

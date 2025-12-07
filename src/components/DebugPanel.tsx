@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Box, Button, Typography, Paper } from '@mui/material';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import { useUser } from '@/contexts/UserContext';
 
 export default function DebugPanel() {
@@ -13,88 +14,50 @@ export default function DebugPanel() {
   }
 
   return (
-    <Box
-      sx={{
-        position: 'fixed',
-        bottom: 16,
-        right: 16,
-        zIndex: 9999,
-      }}
-    >
+    <div className="fixed bottom-4 right-4 z-[9999]">
       {!showDebug ? (
         <Button
-          variant="contained"
-          size="small"
+          size="sm"
           onClick={() => setShowDebug(true)}
-          sx={{
-            backgroundColor: '#ef4444',
-            '&:hover': { backgroundColor: '#dc2626' },
-          }}
+          className="bg-red-500 hover:bg-red-600"
         >
           Debug
         </Button>
       ) : (
-        <Paper
-          sx={{
-            p: 2,
-            maxWidth: 400,
-            maxHeight: 500,
-            overflow: 'auto',
-            backgroundColor: 'rgba(0, 0, 0, 0.9)',
-            color: 'white',
-          }}
-        >
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-            <Typography variant="h6" sx={{ fontSize: '0.875rem', fontWeight: 600 }}>
-              Debug Panel
-            </Typography>
+        <Card className="p-4 max-w-[400px] max-h-[500px] overflow-auto bg-black/90 text-white border-gray-800">
+          <div className="flex justify-between items-start mb-4">
+            <h3 className="text-sm font-semibold">Debug Panel</h3>
             <Button
-              size="small"
+              size="sm"
+              variant="ghost"
               onClick={() => setShowDebug(false)}
-              sx={{ color: 'white', minWidth: 'auto', p: 0 }}
+              className="text-white hover:bg-white/10 h-auto p-0 min-w-0"
             >
               ✕
             </Button>
-          </Box>
+          </div>
 
-          <Box sx={{ fontSize: '0.75rem', fontFamily: 'monospace' }}>
-            <Typography sx={{ color: '#fbbf24', mb: 1, fontWeight: 600 }}>
+          <div className="text-xs font-mono">
+            <p className="text-yellow-400 mb-2 font-semibold">
               Authentication:
-            </Typography>
-            <Typography sx={{ color: '#a3a3a3', mb: 2 }}>
+            </p>
+            <p className="text-neutral-400 mb-4">
               Authenticated: {isAuthenticated ? 'Yes' : 'No'}
               <br />
               Email: {userEmail || 'None'}
-            </Typography>
+            </p>
 
-            <Typography sx={{ color: '#fbbf24', mb: 1, fontWeight: 600 }}>
+            <p className="text-yellow-400 mb-2 font-semibold">
               Onboarding Data:
-            </Typography>
-            <Box
-              component="pre"
-              sx={{
-                color: '#a3a3a3',
-                fontSize: '0.65rem',
-                whiteSpace: 'pre-wrap',
-                wordBreak: 'break-all',
-              }}
-            >
+            </p>
+            <pre className="text-neutral-400 text-[0.65rem] whitespace-pre-wrap break-all">
               {JSON.stringify(onboardingData, null, 2)}
-            </Box>
+            </pre>
 
             <Button
-              variant="outlined"
-              size="small"
-              fullWidth
-              sx={{
-                mt: 2,
-                color: 'white',
-                borderColor: 'white',
-                '&:hover': {
-                  borderColor: '#fbbf24',
-                  backgroundColor: 'rgba(251, 191, 36, 0.1)',
-                },
-              }}
+              variant="outline"
+              size="sm"
+              className="w-full mt-4 text-white border-white hover:border-yellow-400 hover:bg-yellow-400/10"
               onClick={() => {
                 console.log('=== DEBUG INFO ===');
                 console.log('localStorage contents:', {
@@ -114,18 +77,9 @@ export default function DebugPanel() {
             </Button>
 
             <Button
-              variant="outlined"
-              size="small"
-              fullWidth
-              sx={{
-                mt: 1,
-                color: '#ef4444',
-                borderColor: '#ef4444',
-                '&:hover': {
-                  borderColor: '#dc2626',
-                  backgroundColor: 'rgba(239, 68, 68, 0.1)',
-                },
-              }}
+              variant="outline"
+              size="sm"
+              className="w-full mt-2 text-red-500 border-red-500 hover:border-red-600 hover:bg-red-500/10"
               onClick={() => {
                 localStorage.clear();
                 window.location.reload();
@@ -133,10 +87,10 @@ export default function DebugPanel() {
             >
               Clear All Data
             </Button>
-          </Box>
-        </Paper>
+          </div>
+        </Card>
       )}
-    </Box>
+    </div>
   );
 }
 

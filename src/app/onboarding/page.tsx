@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Box, Typography } from '@mui/material';
 import { useUser } from '@/contexts/UserContext';
 import OnboardingLayout from '@/components/onboarding/OnboardingLayout';
 import WelcomeStep from '@/components/onboarding/WelcomeStep';
@@ -99,10 +98,20 @@ export default function OnboardingPage() {
       return;
     }
     
-    // Set the saved step if available
-    if (savedStep > 0) {
+    // Only resume from saved step if user has actual onboarding data
+    // This prevents skipping Welcome screen when coming from verification
+    if (savedStep > 0 && savedData && (
+      savedData.businessProfile?.businessName || 
+      savedData.customers?.length > 0 || 
+      savedData.bankConnection?.bankId ||
+      savedData.invoices?.length > 0
+    )) {
       console.log('OnboardingPage - Resuming from step:', savedStep);
       setActiveStep(savedStep);
+    } else {
+      console.log('OnboardingPage - Starting from Welcome (no meaningful data found)');
+      setActiveStep(0);
+      saveCurrentStep(0);
     }
     
     setHasInitialized(true);
@@ -256,37 +265,12 @@ export default function OnboardingPage() {
   // Show loading if context is loading or not initialized yet
   if (isLoading || !hasInitialized) {
     return (
-      <Box
-        sx={{
-          minHeight: '100vh',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          backgroundColor: '#F5F5F5',
-        }}
-      >
-        <Box sx={{ textAlign: 'center' }}>
-          <Box
-            sx={{
-              width: 40,
-              height: 40,
-              border: '4px solid #E9EAEB',
-              borderTop: '4px solid #2164ef',
-              borderRadius: '50%',
-              animation: 'spin 1s linear infinite',
-              margin: '0 auto',
-              mb: 2,
-              '@keyframes spin': {
-                '0%': { transform: 'rotate(0deg)' },
-                '100%': { transform: 'rotate(360deg)' },
-              },
-            }}
-          />
-          <Typography sx={{ fontSize: '0.875rem', color: '#717680' }}>
-            Loading...
-          </Typography>
-        </Box>
-      </Box>
+      <div className="min-h-screen flex items-center justify-center bg-[#F5F5F5]">
+        <div className="text-center">
+          <div className="w-10 h-10 border-4 border-[#E9EAEB] border-t-[#2164ef] rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-sm text-[#717680]">Loading...</p>
+        </div>
+      </div>
     );
   }
 

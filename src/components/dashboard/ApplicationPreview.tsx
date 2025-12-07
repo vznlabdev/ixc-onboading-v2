@@ -1,20 +1,15 @@
 'use client';
 
 import React from 'react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
 import {
-  Box,
-  Typography,
-  Card,
-  CardContent,
-  Divider,
-  Chip,
-} from '@mui/material';
-import {
-  Business as BusinessIcon,
-  People as PeopleIcon,
-  AccountBalance as BankIcon,
-  Description as InvoiceIcon,
-} from '@mui/icons-material';
+  Building2,
+  Users,
+  Landmark,
+  FileText,
+} from 'lucide-react';
 
 interface OnboardingData {
   businessProfile: {
@@ -60,308 +55,214 @@ export default function ApplicationPreview({ data }: ApplicationPreviewProps) {
   };
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+    <div className="flex flex-col gap-6">
       {/* Business Profile Section */}
-      <Card sx={{ borderRadius: 2 }}>
-        <CardContent sx={{ p: 3 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
-            <Box
-              sx={{
-                width: 48,
-                height: 48,
-                borderRadius: '8px',
-                backgroundColor: '#eff6ff',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <BusinessIcon sx={{ color: '#2164ef', fontSize: 24 }} />
-            </Box>
-            <Typography
-              sx={{
-                fontSize: '1.125rem',
-                fontWeight: 600,
-                color: '#181D27',
-              }}
-            >
+      <Card className="border border-gray-200 rounded-lg shadow-none">
+        <CardContent className="p-6">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 rounded-md border border-gray-200 flex items-center justify-center bg-gray-50">
+              <Building2 className="w-5 h-5 text-gray-700" />
+            </div>
+            <h3 className="text-base font-semibold text-black">
               Business Profile
-            </Typography>
-          </Box>
+            </h3>
+          </div>
 
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <Box>
-              <Typography sx={{ fontSize: '0.75rem', color: '#717680', mb: 0.5 }}>
+          <div className="space-y-5">
+            <div>
+              <p className="text-xs text-gray-500 mb-1.5 font-medium">
                 Business Name
-              </Typography>
-              <Typography sx={{ fontSize: '0.875rem', fontWeight: 500, color: '#181D27' }}>
+              </p>
+              <p className="text-sm text-gray-900">
                 {data.businessProfile.businessName || 'Not provided'}
-              </Typography>
-            </Box>
+              </p>
+            </div>
 
-            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 2 }}>
-              <Box>
-                <Typography sx={{ fontSize: '0.75rem', color: '#717680', mb: 0.5 }}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div>
+                <p className="text-xs text-gray-500 mb-1.5 font-medium">
                   Business Type
-                </Typography>
-                <Typography sx={{ fontSize: '0.875rem', fontWeight: 500, color: '#181D27', textTransform: 'capitalize' }}>
+                </p>
+                <p className="text-sm text-gray-900 capitalize">
                   {data.businessProfile.businessType.replace('_', ' ') || 'Not provided'}
-                </Typography>
-              </Box>
-              <Box>
-                <Typography sx={{ fontSize: '0.75rem', color: '#717680', mb: 0.5 }}>
+                </p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500 mb-1.5 font-medium">
                   Industry
-                </Typography>
-                <Typography sx={{ fontSize: '0.875rem', fontWeight: 500, color: '#181D27', textTransform: 'capitalize' }}>
+                </p>
+                <p className="text-sm text-gray-900 capitalize">
                   {data.businessProfile.industry.replace('_', ' ') || 'Not provided'}
-                </Typography>
-              </Box>
-            </Box>
+                </p>
+              </div>
+            </div>
 
-            <Box>
-              <Typography sx={{ fontSize: '0.75rem', color: '#717680', mb: 0.5 }}>
+            <div>
+              <p className="text-xs text-gray-500 mb-1.5 font-medium">
                 EIN
-              </Typography>
-              <Typography sx={{ fontSize: '0.875rem', fontWeight: 500, color: '#181D27' }}>
+              </p>
+              <p className="text-sm text-gray-900 font-mono">
                 {data.businessProfile.ein || 'Not provided'}
-              </Typography>
-            </Box>
+              </p>
+            </div>
 
-            <Divider sx={{ my: 1 }} />
+            <Separator className="my-4" />
 
-            <Box>
-              <Typography sx={{ fontSize: '0.875rem', fontWeight: 600, color: '#181D27', mb: 2 }}>
+            <div>
+              <p className="text-sm font-medium text-black mb-3">
                 Business Address
-              </Typography>
-              <Typography sx={{ fontSize: '0.875rem', color: '#535862', lineHeight: 1.6 }}>
+              </p>
+              <p className="text-sm text-gray-600 leading-relaxed">
                 {data.businessProfile.street && `${data.businessProfile.street}, `}
                 {data.businessProfile.building && `${data.businessProfile.building}, `}
                 {data.businessProfile.city && `${data.businessProfile.city}, `}
                 {data.businessProfile.state && `${data.businessProfile.state} `}
                 {data.businessProfile.zip || ''}
                 {!data.businessProfile.street && !data.businessProfile.city && 'Address not provided'}
-              </Typography>
-            </Box>
-          </Box>
+              </p>
+            </div>
+          </div>
         </CardContent>
       </Card>
 
       {/* Customers Section */}
-      <Card sx={{ borderRadius: 2 }}>
-        <CardContent sx={{ p: 3 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
-            <Box
-              sx={{
-                width: 48,
-                height: 48,
-                borderRadius: '8px',
-                backgroundColor: '#eff6ff',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <PeopleIcon sx={{ color: '#2164ef', fontSize: 24 }} />
-            </Box>
-            <Box sx={{ flex: 1 }}>
-              <Typography
-                sx={{
-                  fontSize: '1.125rem',
-                  fontWeight: 600,
-                  color: '#181D27',
-                }}
-              >
-                Customers
-              </Typography>
-            </Box>
-            <Chip
-              label={`${data.customers.length} customer${data.customers.length !== 1 ? 's' : ''}`}
-              size="small"
-              sx={{
-                backgroundColor: '#eff6ff',
-                color: '#2164ef',
-                fontWeight: 500,
-              }}
-            />
-          </Box>
+      <Card className="border border-gray-200 rounded-lg shadow-none">
+        <CardContent className="p-6">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 rounded-md border border-gray-200 flex items-center justify-center bg-gray-50">
+              <Users className="w-5 h-5 text-gray-700" />
+            </div>
+            <h3 className="text-base font-semibold text-black flex-1">
+              Customers
+            </h3>
+            <Badge className="bg-gray-100 text-gray-700 border-gray-200 font-medium hover:bg-gray-100 text-xs">
+              {data.customers.length}
+            </Badge>
+          </div>
 
           {data.customers.length === 0 ? (
-            <Typography sx={{ fontSize: '0.875rem', color: '#717680', fontStyle: 'italic' }}>
+            <p className="text-sm text-gray-500 italic">
               No customers added
-            </Typography>
+            </p>
           ) : (
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <div className="space-y-4">
               {data.customers.map((customer, index) => (
-                <Box
+                <div
                   key={index}
-                  sx={{
-                    p: 2,
-                    backgroundColor: '#FAFAFA',
-                    borderRadius: 2,
-                    border: '1px solid #E9EAEB',
-                  }}
+                  className="p-4 border border-gray-200 rounded-lg bg-gray-50"
                 >
-                  <Typography sx={{ fontSize: '0.875rem', fontWeight: 600, color: '#181D27', mb: 1 }}>
+                  <p className="text-sm font-medium text-black mb-3">
                     {customer.customerName}
-                  </Typography>
-                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
-                    <Typography sx={{ fontSize: '0.75rem', color: '#535862' }}>
-                      Contact: {customer.contactPerson}
-                    </Typography>
-                    <Typography sx={{ fontSize: '0.75rem', color: '#535862' }}>
-                      Email: {customer.email}
-                    </Typography>
-                    <Typography sx={{ fontSize: '0.75rem', color: '#535862' }}>
-                      Phone: {customer.phone}
-                    </Typography>
+                  </p>
+                  <div className="space-y-1.5">
+                    <p className="text-xs text-gray-600">
+                      <span className="text-gray-500">Contact:</span> {customer.contactPerson}
+                    </p>
+                    <p className="text-xs text-gray-600">
+                      <span className="text-gray-500">Email:</span> {customer.email}
+                    </p>
+                    <p className="text-xs text-gray-600">
+                      <span className="text-gray-500">Phone:</span> {customer.phone}
+                    </p>
                     {customer.billingAddress && (
-                      <Typography sx={{ fontSize: '0.75rem', color: '#535862' }}>
-                        Address: {customer.billingAddress}
-                      </Typography>
+                      <p className="text-xs text-gray-600">
+                        <span className="text-gray-500">Address:</span> {customer.billingAddress}
+                      </p>
                     )}
-                  </Box>
-                </Box>
+                  </div>
+                </div>
               ))}
-            </Box>
+            </div>
           )}
         </CardContent>
       </Card>
 
       {/* Bank Connection Section */}
-      <Card sx={{ borderRadius: 2 }}>
-        <CardContent sx={{ p: 3 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
-            <Box
-              sx={{
-                width: 48,
-                height: 48,
-                borderRadius: '8px',
-                backgroundColor: '#eff6ff',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <BankIcon sx={{ color: '#2164ef', fontSize: 24 }} />
-            </Box>
-            <Typography
-              sx={{
-                fontSize: '1.125rem',
-                fontWeight: 600,
-                color: '#181D27',
-              }}
-            >
+      <Card className="border border-gray-200 rounded-lg shadow-none">
+        <CardContent className="p-6">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 rounded-md border border-gray-200 flex items-center justify-center bg-gray-50">
+              <Landmark className="w-5 h-5 text-gray-700" />
+            </div>
+            <h3 className="text-base font-semibold text-black">
               Bank Connection
-            </Typography>
-          </Box>
+            </h3>
+          </div>
 
           {!data.bankConnection.bankName ? (
-            <Typography sx={{ fontSize: '0.875rem', color: '#717680', fontStyle: 'italic' }}>
+            <p className="text-sm text-gray-500 italic">
               No bank connected
-            </Typography>
+            </p>
           ) : (
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              <Box>
-                <Typography sx={{ fontSize: '0.75rem', color: '#717680', mb: 0.5 }}>
+            <div className="space-y-4">
+              <div>
+                <p className="text-xs text-gray-500 mb-1.5 font-medium">
                   Bank Name
-                </Typography>
-                <Typography sx={{ fontSize: '0.875rem', fontWeight: 500, color: '#181D27' }}>
+                </p>
+                <p className="text-sm text-gray-900">
                   {data.bankConnection.bankName}
-                </Typography>
-              </Box>
-              <Box>
-                <Typography sx={{ fontSize: '0.75rem', color: '#717680', mb: 0.5 }}>
+                </p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500 mb-2 font-medium">
                   Connection Type
-                </Typography>
-                <Chip
-                  label={data.bankConnection.isManual ? 'Manual' : 'Automated'}
-                  size="small"
-                  sx={{
-                    backgroundColor: data.bankConnection.isManual ? '#F5F5F5' : '#eff6ff',
-                    color: data.bankConnection.isManual ? '#535862' : '#2164ef',
-                    fontWeight: 500,
-                  }}
-                />
-              </Box>
-            </Box>
+                </p>
+                <Badge
+                  className={`${
+                    data.bankConnection.isManual
+                      ? 'bg-gray-100 text-gray-700 border-gray-200'
+                      : 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                  } font-medium hover:bg-current text-xs border`}
+                >
+                  {data.bankConnection.isManual ? 'Manual' : 'Automated'}
+                </Badge>
+              </div>
+            </div>
           )}
         </CardContent>
       </Card>
 
       {/* Invoices Section */}
-      <Card sx={{ borderRadius: 2 }}>
-        <CardContent sx={{ p: 3 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
-            <Box
-              sx={{
-                width: 48,
-                height: 48,
-                borderRadius: '8px',
-                backgroundColor: '#eff6ff',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <InvoiceIcon sx={{ color: '#2164ef', fontSize: 24 }} />
-            </Box>
-            <Box sx={{ flex: 1 }}>
-              <Typography
-                sx={{
-                  fontSize: '1.125rem',
-                  fontWeight: 600,
-                  color: '#181D27',
-                }}
-              >
-                Invoices
-              </Typography>
-            </Box>
-            <Chip
-              label={`${data.invoices.length} file${data.invoices.length !== 1 ? 's' : ''}`}
-              size="small"
-              sx={{
-                backgroundColor: '#eff6ff',
-                color: '#2164ef',
-                fontWeight: 500,
-              }}
-            />
-          </Box>
+      <Card className="border border-gray-200 rounded-lg shadow-none">
+        <CardContent className="p-6">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 rounded-md border border-gray-200 flex items-center justify-center bg-gray-50">
+              <FileText className="w-5 h-5 text-gray-700" />
+            </div>
+            <h3 className="text-base font-semibold text-black flex-1">
+              Invoices
+            </h3>
+            <Badge className="bg-gray-100 text-gray-700 border-gray-200 font-medium hover:bg-gray-100 text-xs">
+              {data.invoices.length}
+            </Badge>
+          </div>
 
           {data.invoices.length === 0 ? (
-            <Typography sx={{ fontSize: '0.875rem', color: '#717680', fontStyle: 'italic' }}>
+            <p className="text-sm text-gray-500 italic">
               No invoices uploaded
-            </Typography>
+            </p>
           ) : (
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+            <div className="space-y-2">
               {data.invoices.map((invoice, index) => (
-                <Box
+                <div
                   key={index}
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    p: 2,
-                    backgroundColor: '#FAFAFA',
-                    borderRadius: 2,
-                    border: '1px solid #E9EAEB',
-                  }}
+                  className="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
                 >
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                    <InvoiceIcon sx={{ color: '#717680', fontSize: 20 }} />
-                    <Typography sx={{ fontSize: '0.875rem', fontWeight: 500, color: '#181D27' }}>
+                  <div className="flex items-center gap-3 flex-1 min-w-0">
+                    <FileText className="w-4 h-4 text-gray-500 flex-shrink-0" />
+                    <p className="text-sm text-gray-900 truncate">
                       {invoice.name}
-                    </Typography>
-                  </Box>
-                  <Typography sx={{ fontSize: '0.75rem', color: '#717680' }}>
+                    </p>
+                  </div>
+                  <p className="text-xs text-gray-500 font-mono ml-3 flex-shrink-0">
                     {formatBytes(invoice.size)}
-                  </Typography>
-                </Box>
+                  </p>
+                </div>
               ))}
-            </Box>
+            </div>
           )}
         </CardContent>
       </Card>
-    </Box>
+    </div>
   );
 }
-

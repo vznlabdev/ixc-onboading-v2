@@ -1,29 +1,27 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Card, CardContent } from '@/components/ui/card';
 import {
-  Box,
-  Typography,
-  Button,
-  Card,
-  CardContent,
-  Checkbox,
-  Link,
-  TextField,
   Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  IconButton,
-} from '@mui/material';
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { 
   Link as LinkIcon, 
-  ArrowBack as ArrowBackIcon,
-  CheckCircle as CheckCircleIcon,
-  Error as ErrorIcon,
-  Lock as LockIcon,
-  Verified as VerifiedIcon,
-} from '@mui/icons-material';
+  ArrowLeft,
+  CheckCircle,
+  XCircle,
+  Lock,
+  ShieldCheck,
+} from 'lucide-react';
 
 interface BankConnectStepProps {
   onNext: () => void;
@@ -89,7 +87,7 @@ export default function BankConnectStep({
     });
   };
 
-  const handleManualFormChange = (field: string) => (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleManualFormChange = (field: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
     setManualFormData({
       ...manualFormData,
       [field]: event.target.value,
@@ -174,194 +172,129 @@ export default function BankConnectStep({
 
   if (showManualForm) {
     return (
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          minHeight: '100%',
-          px: 4,
-          py: 6,
-          maxWidth: 600,
-          mx: 'auto',
-        }}
-      >
+      <div className="flex flex-col items-center min-h-full px-8 py-12 max-w-[600px] mx-auto">
         {/* Back Button */}
-        <Box sx={{ width: '100%', mb: 3 }}>
-          <IconButton
+        <div className="w-full mb-6">
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={handleBackToSelection}
-            sx={{
-              color: '#535862',
-              '&:hover': {
-                backgroundColor: '#F5F5F5',
-              },
-            }}
+            className="text-[#535862] hover:bg-[#F5F5F5] p-2"
           >
-            <ArrowBackIcon />
-          </IconButton>
-        </Box>
+            <ArrowLeft className="w-5 h-5" />
+          </Button>
+        </div>
 
         {/* Title */}
-        <Typography
-          sx={{
-            fontSize: '1.875rem',
-            fontWeight: 600,
-            color: '#181D27',
-            mb: 2,
-            textAlign: 'center',
-          }}
-        >
+        <h1 className="text-3xl font-semibold text-[#181D27] mb-4 text-center">
           Connect manually
-        </Typography>
+        </h1>
 
         {/* Description */}
-        <Typography
-          sx={{
-            fontSize: '1rem',
-            fontWeight: 400,
-            color: '#535862',
-            mb: 4,
-            textAlign: 'center',
-            maxWidth: 500,
-          }}
-        >
+        <p className="text-base font-normal text-[#535862] mb-8 text-center max-w-[500px]">
           Enter your bank account details to connect manually.
-        </Typography>
+        </p>
 
         {/* Manual Form */}
-        <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 3 }}>
+        <div className="w-full flex flex-col gap-6">
           {/* Bank Name */}
-          <FormControl fullWidth required>
-            <InputLabel>Bank Name</InputLabel>
+          <div className="space-y-2">
+            <Label htmlFor="bankName">
+              Bank Name <span className="text-red-500">*</span>
+            </Label>
             <Select
               value={manualFormData.bankName}
-              onChange={(e) => setManualFormData({ ...manualFormData, bankName: e.target.value })}
-              label="Bank Name"
-              sx={{
-                borderRadius: 2,
-              }}
+              onValueChange={(value) => setManualFormData({ ...manualFormData, bankName: value })}
             >
-              <MenuItem value="">Select your bank</MenuItem>
-              <MenuItem value="chase">Chase</MenuItem>
-              <MenuItem value="bank-of-america">Bank of America</MenuItem>
-              <MenuItem value="wells-fargo">Wells Fargo</MenuItem>
-              <MenuItem value="citibank">Citibank</MenuItem>
-              <MenuItem value="us-bank">U.S. Bank</MenuItem>
-              <MenuItem value="pnc">PNC Bank</MenuItem>
-              <MenuItem value="capital-one">Capital One</MenuItem>
-              <MenuItem value="other">Other</MenuItem>
+              <SelectTrigger>
+                <SelectValue placeholder="Select your bank" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="chase">Chase</SelectItem>
+                <SelectItem value="bank-of-america">Bank of America</SelectItem>
+                <SelectItem value="wells-fargo">Wells Fargo</SelectItem>
+                <SelectItem value="citibank">Citibank</SelectItem>
+                <SelectItem value="us-bank">U.S. Bank</SelectItem>
+                <SelectItem value="pnc">PNC Bank</SelectItem>
+                <SelectItem value="capital-one">Capital One</SelectItem>
+                <SelectItem value="other">Other</SelectItem>
+              </SelectContent>
             </Select>
-          </FormControl>
+          </div>
 
           {/* Account Type */}
-          <FormControl fullWidth required>
-            <InputLabel>Account Type</InputLabel>
+          <div className="space-y-2">
+            <Label htmlFor="accountType">
+              Account Type <span className="text-red-500">*</span>
+            </Label>
             <Select
               value={manualFormData.accountType}
-              onChange={(e) => setManualFormData({ ...manualFormData, accountType: e.target.value })}
-              label="Account Type"
-              sx={{
-                borderRadius: 2,
-              }}
+              onValueChange={(value) => setManualFormData({ ...manualFormData, accountType: value })}
             >
-              <MenuItem value="">Select account type</MenuItem>
-              <MenuItem value="checking">Checking</MenuItem>
-              <MenuItem value="savings">Savings</MenuItem>
-              <MenuItem value="business-checking">Business Checking</MenuItem>
+              <SelectTrigger>
+                <SelectValue placeholder="Select account type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="checking">Checking</SelectItem>
+                <SelectItem value="savings">Savings</SelectItem>
+                <SelectItem value="business-checking">Business Checking</SelectItem>
+              </SelectContent>
             </Select>
-          </FormControl>
+          </div>
 
           {/* Account Number */}
-          <TextField
-            label="Account Number"
-            required
-            placeholder="Enter your account number"
-            value={manualFormData.accountNumber}
-            onChange={handleManualFormChange('accountNumber')}
-            variant="outlined"
-            fullWidth
-            sx={{
-              '& .MuiOutlinedInput-root': {
-                borderRadius: 2,
-              },
-            }}
-          />
+          <div className="space-y-2">
+            <Label htmlFor="accountNumber">
+              Account Number <span className="text-red-500">*</span>
+            </Label>
+            <Input
+              id="accountNumber"
+              placeholder="Enter your account number"
+              value={manualFormData.accountNumber}
+              onChange={handleManualFormChange('accountNumber')}
+            />
+          </div>
 
           {/* Routing Number */}
-          <TextField
-            label="Routing Number"
-            required
-            placeholder="Enter routing number"
-            value={manualFormData.routingNumber}
-            onChange={handleManualFormChange('routingNumber')}
-            variant="outlined"
-            fullWidth
-            helperText="9-digit routing number found on your checks"
-            sx={{
-              '& .MuiOutlinedInput-root': {
-                borderRadius: 2,
-              },
-            }}
-          />
-        </Box>
+          <div className="space-y-2">
+            <Label htmlFor="routingNumber">
+              Routing Number <span className="text-red-500">*</span>
+            </Label>
+            <Input
+              id="routingNumber"
+              placeholder="Enter routing number"
+              value={manualFormData.routingNumber}
+              onChange={handleManualFormChange('routingNumber')}
+            />
+            <p className="text-xs text-[#717680]">
+              9-digit routing number found on your checks
+            </p>
+          </div>
+        </div>
 
         {/* Action Buttons */}
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 2,
-            mt: 6,
-            width: '100%',
-            alignItems: 'center',
-          }}
-        >
+        <div className="flex flex-col gap-4 mt-12 w-full items-center">
           <Button
-            variant="contained"
-            size="medium"
             onClick={handleManualConnect}
             disabled={!manualFormData.bankName || !manualFormData.accountNumber || !manualFormData.routingNumber || !manualFormData.accountType}
-            sx={{
-              px: 4,
-              py: 1,
-              fontSize: '0.875rem',
-              fontWeight: 500,
-              borderRadius: 2,
-              minWidth: 150,
-            }}
+            className="px-8 py-2 text-sm font-medium rounded-lg min-w-[150px]"
           >
             Connect
           </Button>
           <Button
-            variant="text"
-            size="small"
+            variant="ghost"
             onClick={onSkip}
-            sx={{
-              fontSize: '0.875rem',
-              color: '#535862',
-              '&:hover': {
-                backgroundColor: 'transparent',
-                textDecoration: 'underline',
-              },
-            }}
+            className="text-sm text-[#535862] hover:bg-transparent hover:underline"
           >
             Skip for now
           </Button>
-        </Box>
+        </div>
 
         {/* Security Note */}
-        <Typography
-          sx={{
-            fontSize: '0.75rem',
-            fontWeight: 400,
-            color: '#717680',
-            mt: 4,
-            textAlign: 'center',
-          }}
-        >
+        <p className="text-xs font-normal text-[#717680] mt-8 text-center">
           Your credentials are encrypted and never stored by IncoXchange.
-        </Typography>
-      </Box>
+        </p>
+      </div>
     );
   }
 
@@ -369,404 +302,164 @@ export default function BankConnectStep({
     const connectedBank = banks.find(b => b.id === selectedBank);
     
     return (
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          minHeight: '100%',
-          px: 4,
-          py: 6,
-          textAlign: 'center',
-        }}
-      >
+      <div className="flex flex-col items-center justify-center min-h-full px-8 py-12 text-center">
         {/* Status Icon or Logo */}
         {connectionStatus === 'success' ? (
-          <CheckCircleIcon
-            sx={{
-              width: 80,
-              height: 80,
-              color: '#10b981',
-              mb: 4,
-            }}
-          />
+          <CheckCircle className="w-20 h-20 text-emerald-500 mb-8" />
         ) : connectionStatus === 'error' ? (
-          <ErrorIcon
-            sx={{
-              width: 80,
-              height: 80,
-              color: '#ef4444',
-              mb: 4,
-            }}
-          />
-        ) : (
-          <Box
-            component="img"
-            src={connectedBank?.logo}
-            alt={`${connectedBank?.name} logo`}
-            sx={{
-              width: 150,
-              height: 80,
-              objectFit: 'contain',
-              mb: 4,
-            }}
-          />
-        )}
+          <XCircle className="w-20 h-20 text-red-500 mb-8" />
+        ) : connectedBank ? (
+          <div className="w-[150px] h-20 relative mb-8">
+            <Image
+              src={connectedBank.logo}
+              alt={`${connectedBank.name} logo`}
+              fill
+              className="object-contain"
+            />
+          </div>
+        ) : null}
 
         {/* Title */}
-        <Typography
-          sx={{
-            fontSize: '1.875rem',
-            fontWeight: 600,
-            color: connectionStatus === 'error' ? '#ef4444' : connectionStatus === 'success' ? '#10b981' : '#181D27',
-            mb: 2,
-          }}
-        >
+        <h1 className={`text-3xl font-semibold mb-4 ${
+          connectionStatus === 'error' ? 'text-red-500' : 
+          connectionStatus === 'success' ? 'text-emerald-500' : 
+          'text-[#181D27]'
+        }`}>
           {connectionStatus === 'success' 
             ? 'Successfully connected!' 
             : connectionStatus === 'error'
             ? 'Connection failed'
             : `Connecting to ${connectedBank?.provider}`}
-        </Typography>
+        </h1>
 
         {/* Description */}
-        <Typography
-          sx={{
-            fontSize: '1rem',
-            fontWeight: 400,
-            color: '#535862',
-            mb: 4,
-            maxWidth: 500,
-          }}
-        >
+        <p className="text-base font-normal text-[#535862] mb-8 max-w-[500px]">
           {connectionStatus === 'success'
             ? 'Your bank account has been securely linked.'
             : connectionStatus === 'error'
             ? errorMessage
             : 'Please wait while we securely connect to your bank account...'}
-        </Typography>
+        </p>
 
         {/* Loading Spinner or Status Icon */}
         {connectionStatus === 'connecting' && (
-          <Box
-            sx={{
-              width: 48,
-              height: 48,
-              border: '4px solid #E9EAEB',
-              borderTop: '4px solid #2164ef',
-              borderRadius: '50%',
-              animation: 'spin 1s linear infinite',
-              '@keyframes spin': {
-                '0%': { transform: 'rotate(0deg)' },
-                '100%': { transform: 'rotate(360deg)' },
-              },
-            }}
-          />
+          <div className="w-12 h-12 border-4 border-[#E9EAEB] border-t-[#2164ef] rounded-full animate-spin" />
         )}
-      </Box>
+      </div>
     );
   }
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        minHeight: '100%',
-        px: { xs: 2, sm: 4 },
-        py: { xs: 4, sm: 6 },
-        maxWidth: 900,
-        mx: 'auto',
-      }}
-    >
+    <div className="flex flex-col items-center min-h-full px-4 sm:px-8 py-8 sm:py-12 max-w-[900px] mx-auto">
       {/* Title */}
-      <Typography
-        sx={{
-          fontSize: { xs: '1.5rem', sm: '1.875rem' },
-          fontWeight: 600,
-          color: '#181D27',
-          mb: 2,
-          textAlign: 'center',
-        }}
-      >
+      <h1 className="text-2xl sm:text-3xl font-semibold text-[#181D27] mb-4 text-center">
         Connect your bank
-      </Typography>
+      </h1>
 
       {/* Description */}
-      <Typography
-        sx={{
-          fontSize: { xs: '0.875rem', sm: '1rem' },
-          fontWeight: 400,
-          color: '#535862',
-          mb: { xs: 4, sm: 6 },
-          textAlign: 'center',
-          maxWidth: 600,
-        }}
-      >
+      <p className="text-sm sm:text-base font-normal text-[#535862] mb-8 sm:mb-12 text-center max-w-[600px]">
         Securely link your business bank account to verify transactions and enable faster payments.
-      </Typography>
+      </p>
 
       {/* Bank Options Grid */}
-      <Box 
-        sx={{ 
-          width: '100%', 
-          mb: 4, 
-          maxWidth: 700,
-          display: 'grid',
-          gridTemplateColumns: {
-            xs: '1fr',
-            sm: 'repeat(2, 1fr)',
-          },
-          gap: 2,
-        }}
-      >
+      <div className="w-full mb-8 max-w-[700px] grid grid-cols-1 sm:grid-cols-2 gap-4">
         {banks.map((bank) => (
           <Card
             key={bank.id}
-            onClick={() => handleBankSelect(bank.id)}
             role="button"
-            aria-label={`Select ${bank.name}`}
             tabIndex={0}
+            aria-label={`Select ${bank.name}`}
+            onClick={() => handleBankSelect(bank.id)}
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
                 handleBankSelect(bank.id);
               }
             }}
-            sx={{
-              cursor: 'pointer',
-              border: selectedBank === bank.id ? '2px solid #2164ef' : '1px solid #E9EAEB',
-              borderRadius: 2,
-              position: 'relative',
-              transition: 'all 0.2s ease',
-              '&:hover': {
-                borderColor: selectedBank === bank.id ? '#2164ef' : '#A4A7AE',
-                boxShadow: selectedBank === bank.id ? 'none' : '0 2px 8px rgba(0,0,0,0.08)',
-              },
-              '&:focus-visible': {
-                outline: '2px solid #2164ef',
-                outlineOffset: 2,
-              },
-            }}
+            className={`cursor-pointer relative transition-all ${
+              selectedBank === bank.id 
+                ? 'border-2 border-[#2164ef]' 
+                : 'border border-[#E9EAEB] hover:border-[#A4A7AE] hover:shadow-md'
+            }`}
           >
-                <CardContent
-                  sx={{
-                    p: 4,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    gap: 2,
-                    position: 'relative',
+            <CardContent className="p-8 flex flex-col items-center gap-4 relative">
+              {/* Checkbox */}
+              {selectedBank === bank.id && (
+                <Checkbox
+                  checked
+                  className="absolute top-2 left-2 pointer-events-none"
+                />
+              )}
+
+              {/* Bank Logo */}
+              <div className="w-[120px] h-[60px] relative mb-2">
+                <Image
+                  src={bank.logo}
+                  alt={`${bank.name} logo`}
+                  fill
+                  className="object-contain"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.style.display = 'none';
                   }}
-                >
-                  {/* Checkbox */}
-                  {selectedBank === bank.id && (
-                    <Checkbox
-                      checked
-                      sx={{
-                        position: 'absolute',
-                        top: 8,
-                        left: 8,
-                        padding: 0,
-                      }}
-                    />
-                  )}
+                />
+              </div>
 
-                  {/* Bank Logo */}
-                  <Box
-                    component="img"
-                    src={bank.logo}
-                    alt={`${bank.name} logo`}
-                    sx={{
-                      width: 120,
-                      height: 60,
-                      objectFit: 'contain',
-                      mb: 1,
-                    }}
-onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
-                      // Fallback if logo doesn't exist
-                      const target = e.target as HTMLImageElement;
-                      target.style.display = 'none';
-                      if (target.nextElementSibling) {
-                        (target.nextElementSibling as HTMLElement).style.display = 'flex';
-                      }
-                    }}
-                  />
-                  {/* Fallback text */}
-                  <Box
-                    sx={{
-                      display: 'none',
-                      width: 120,
-                      height: 60,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: '1.25rem',
-                      fontWeight: 600,
-                      color: '#535862',
-                      mb: 1,
-                    }}
-                  >
-                    {bank.name}
-                  </Box>
-
-                  {/* Bank Name */}
-                  <Typography
-                    sx={{
-                      fontSize: '0.875rem',
-                      fontWeight: 500,
-                      color: '#535862',
-                    }}
-                  >
-                    Connect with {bank.provider}
-                  </Typography>
-                </CardContent>
-              </Card>
+              {/* Bank Name */}
+              <p className="text-sm font-medium text-[#535862]">
+                Connect with {bank.provider}
+              </p>
+            </CardContent>
+          </Card>
         ))}
-      </Box>
+      </div>
 
       {/* Connect Manually Link */}
-      <Link
-        component="button"
+      <button
         onClick={handleConnectManually}
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 1,
-          fontSize: '0.875rem',
-          fontWeight: 500,
-          color: '#2164ef',
-          textDecoration: 'none',
-          mb: 6,
-          cursor: 'pointer',
-          '&:hover': {
-            textDecoration: 'underline',
-          },
-        }}
+        className="flex items-center gap-2 text-sm font-medium text-[#2164ef] hover:underline mb-12 cursor-pointer"
       >
-        <LinkIcon sx={{ fontSize: 18 }} />
+        <LinkIcon className="w-4 h-4" />
         Connect manually
-      </Link>
+      </button>
 
       {/* Action Buttons */}
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 2,
-          width: '100%',
-          alignItems: 'center',
-        }}
-      >
+      <div className="flex flex-col gap-4 w-full items-center">
         <Button
-          variant="contained"
-          size="medium"
           onClick={handleConnect}
-          sx={{
-            px: 4,
-            py: 1,
-            fontSize: '0.875rem',
-            fontWeight: 500,
-            borderRadius: 2,
-            minWidth: 150,
-          }}
+          className="px-8 py-2 text-sm font-medium rounded-lg min-w-[150px]"
         >
           Connect
         </Button>
         <Button
-          variant="text"
-          size="small"
+          variant="ghost"
           onClick={onSkip}
-          sx={{
-            fontSize: '0.875rem',
-            color: '#535862',
-            '&:hover': {
-              backgroundColor: 'transparent',
-              textDecoration: 'underline',
-            },
-          }}
+          className="text-sm text-[#535862] hover:bg-transparent hover:underline"
         >
           Skip for now
         </Button>
-      </Box>
+      </div>
 
       {/* Security Badges */}
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: 2,
-          mt: 4,
-        }}
-      >
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 2,
-            flexWrap: 'wrap',
-            justifyContent: 'center',
-          }}
-        >
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 0.5,
-              px: 2,
-              py: 1,
-              backgroundColor: '#eff6ff',
-              borderRadius: 1,
-            }}
-          >
-            <LockIcon sx={{ fontSize: 16, color: '#2164ef' }} />
-            <Typography
-              sx={{
-                fontSize: '0.75rem',
-                fontWeight: 500,
-                color: '#2164ef',
-              }}
-            >
+      <div className="flex flex-col items-center gap-4 mt-8">
+        <div className="flex items-center gap-4 flex-wrap justify-center">
+          <div className="flex items-center gap-2 px-4 py-2 bg-[#eff6ff] rounded">
+            <Lock className="w-4 h-4 text-[#2164ef]" />
+            <span className="text-xs font-medium text-[#2164ef]">
               256-bit Encryption
-            </Typography>
-          </Box>
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 0.5,
-              px: 2,
-              py: 1,
-              backgroundColor: '#eff6ff',
-              borderRadius: 1,
-            }}
-          >
-            <VerifiedIcon sx={{ fontSize: 16, color: '#2164ef' }} />
-            <Typography
-              sx={{
-                fontSize: '0.75rem',
-                fontWeight: 500,
-                color: '#2164ef',
-              }}
-            >
+            </span>
+          </div>
+          <div className="flex items-center gap-2 px-4 py-2 bg-[#eff6ff] rounded">
+            <ShieldCheck className="w-4 h-4 text-[#2164ef]" />
+            <span className="text-xs font-medium text-[#2164ef]">
               Read-only Access
-            </Typography>
-          </Box>
-        </Box>
-        <Typography
-          sx={{
-            fontSize: '0.75rem',
-            fontWeight: 400,
-            color: '#717680',
-            textAlign: 'center',
-          }}
-        >
+            </span>
+          </div>
+        </div>
+        <p className="text-xs font-normal text-[#717680] text-center">
           Your credentials are encrypted and never stored by IncoXchange.
-        </Typography>
-      </Box>
-    </Box>
+        </p>
+      </div>
+    </div>
   );
 }
-
